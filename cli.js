@@ -52,14 +52,14 @@ const pathModule = require('path');
 
 const cpFile = require('cp-file');
 const revFile = require('rev-file');
+const writeJsonFile = require('write-json-file');
 
 const { objectPromiseAll } = require('@hdsydsvenskan/utils');
 
-const assetsOptions = require('./assets.json');
+const workingDir = opts.path || process.cwd();
+const assetsOptions = require(pathModule.resolve(workingDir, 'assets.json'));
 
 const { files, sourceDir, targetDir } = assetsOptions;
-
-const workingDir = opts.path || process.cwd();
 
 objectPromiseAll(files.reduce((result, file) => {
   const resolvedSourceDir = pathModule.resolve(workingDir, sourceDir);
@@ -76,5 +76,5 @@ objectPromiseAll(files.reduce((result, file) => {
 
   return result;
 }, {}))
-  .then(files => console.log(JSON.stringify({ files })))
+  .then(files => writeJsonFile(pathModule.resolve(workingDir, 'asset-versions.json'), { files }))
   .catch(err => setImmediate(() => { throw err; }));

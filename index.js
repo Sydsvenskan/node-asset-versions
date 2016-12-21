@@ -1,6 +1,7 @@
 'use strict';
 
 const pathModule = require('path');
+const urlModule = require('url');
 
 class AssetVersions {
   constructor (options) {
@@ -8,7 +9,7 @@ class AssetVersions {
 
     if (!options.assetDefinitions) { throw new Error('assetDefinitions option is required'); }
 
-    this.definitionsPath = options.assetsDefinition;
+    this.definitionsPath = options.assetDefinitions;
 
     this.loadAssetDefinitions();
   }
@@ -47,10 +48,10 @@ class AssetVersions {
     const definition = this.definitions[file];
 
     if (!definition) {
-      throw new Error('Asset definition not found');
+      throw new Error(`Asset definition "${file}" not found`);
     }
 
-    return definition;
+    return urlModule.resolve('/', definition);
   }
 }
 
