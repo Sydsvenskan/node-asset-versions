@@ -10,6 +10,7 @@ class AssetVersions {
     if (!options.assetDefinitions) { throw new Error('assetDefinitions option is required'); }
 
     this.definitionsPath = options.assetDefinitions;
+    this.useVersionedPaths = options.useVersionedPaths !== false;
 
     this.loadAssetDefinitions();
   }
@@ -23,12 +24,14 @@ class AssetVersions {
 
     const { files, sourceDir } = require(definitionsPath);
 
-    let versions;
+    let versions = {};
 
-    try {
-      versions = require(versionsPath);
-    } catch (err) {
-      versions = {};
+    if (this.useVersionedPaths) {
+      try {
+        versions = require(versionsPath);
+      } catch (err) {
+        // It's okay for it not to work
+      }
     }
 
     const fileVersions = (versions.files || []);
