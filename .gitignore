@@ -1,0 +1,21 @@
+/node_modules
+
+# Local environment variables
+/.env
+
+# We're a library, so please, no yarn.lock
+/yarn.lock
+
+# Test things
+/coverage
+
+eshu.sublime-project
+eshu.sublime-workspace
+*.swp
+*.swo
+*.tern-port
+
+# Please..
+.DS_Store
+npm-debug.log
+newrelic_agent.log

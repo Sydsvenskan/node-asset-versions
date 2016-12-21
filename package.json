@@ -1,0 +1,42 @@
+{
+  "name": "@hdsydsvenskan/asset-versions",
+  "version": "0.0.0",
+  "license": "UNLICENSED",
+  "description": "CLI and helper methods for our asset versions",
+  "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
+  "homepage": "https://github.com/sydsvenskan/node-asset-versions",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sydsvenskan/node-asset-versions.git"
+  },
+  "scripts": {
+    "dependency-check": "JS_FILES=\"*.js\" && dependency-check . $JS_FILES && dependency-check . $JS_FILES --unused --no-dev",
+    "test": "installed-check -e && eslint --ext .js --ext .jsx . && npm run dependency-check",
+    "prepush": "npm test"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "main": "index.js",
+  "bin": {
+    "asset-versions": "cli.js"
+  },
+  "devDependencies": {
+    "@hdsydsvenskan/eslint-config-hds": "^2.0.0",
+    "dependency-check": "^2.6.0",
+    "eslint": "^3.4.0",
+    "eslint-config-semistandard": "^7.0.0",
+    "eslint-config-standard": "^6.0.0",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-standard": "^2.0.0",
+    "eslint-plugin-unicorn": "^1.0.0",
+    "husky": "^0.11.5",
+    "installed-check": "^2.0.0"
+  },
+  "dependencies": {
+    "@hdsydsvenskan/utils": "^1.5.1",
+    "cp-file": "^4.1.1",
+    "dashdash": "^1.14.0",
+    "rev-file": "^2.0.0"
+  }
+}
