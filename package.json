@@ -34,7 +34,7 @@
     "installed-check": "^2.0.0"
   },
   "dependencies": {
-    "@hdsydsvenskan/utils": "^1.5.1",
+    "@hdsydsvenskan/utils": "^2.4.0",
     "cp-file": "^4.1.1",
     "dashdash": "^1.14.0",
     "rev-file": "^2.0.0",
