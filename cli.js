@@ -21,6 +21,14 @@ const options = [
     env: 'HDS_ASSETS_VERSIONING_PATH',
     help: 'Folder of assets.json path',
     helpArg: 'PATH'
+  },
+  {
+    names: ['output', 'o'],
+    type: 'string',
+    completionType: 'file',
+    help: 'Folder of assets.json path',
+    helpArg: 'FILE',
+    default: 'asset-versions.json'
   }
 ];
 
@@ -57,6 +65,7 @@ const writeJsonFile = require('write-json-file');
 const { objectPromiseAll } = require('@hdsydsvenskan/utils');
 
 const workingDir = opts.path || process.cwd();
+const outputFile = pathModule.resolve(workingDir, opts.output);
 const assetsOptions = require(pathModule.resolve(workingDir, 'assets.json'));
 
 const { files, sourceDir, targetDir } = assetsOptions;
@@ -76,5 +85,5 @@ objectPromiseAll(files.reduce((result, file) => {
 
   return result;
 }, {}))
-  .then(files => writeJsonFile(pathModule.resolve(workingDir, 'asset-versions.json'), { files }))
+  .then(files => writeJsonFile(outputFile, { files }))
   .catch(err => setImmediate(() => { throw err; }));

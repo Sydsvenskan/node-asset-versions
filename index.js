@@ -11,6 +11,7 @@ class AssetVersions {
 
     this.definitionsPath = options.assetDefinitions;
     this.useVersionedPaths = options.useVersionedPaths !== false;
+    this.versionsFileName = options.versionsFileName || 'asset-versions.json';
 
     this.loadAssetDefinitions();
   }
@@ -18,7 +19,7 @@ class AssetVersions {
   loadAssetDefinitions () {
     const { definitionsPath } = this;
     const definitionDir = pathModule.dirname(definitionsPath);
-    const versionsPath = pathModule.resolve(definitionDir, 'asset-versions.json');
+    const versionsPath = pathModule.resolve(definitionDir, this.versionsFileName);
 
     const result = {};
 

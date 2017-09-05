@@ -56,3 +56,7 @@ Create a `assets.json` file:
   ]
 }
 ```
+
+## Configuration options
+
+* **versions file name** – both the cli (through the `--output`/ `-o` flag) and the module (through the `versionsFileName` option) can be tweaked to use another versions file than the default `asset-versions.json`
