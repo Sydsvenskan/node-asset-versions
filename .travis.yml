@@ -8,9 +8,10 @@ notifications:
   slack:
     on_success: change
     on_failure: always
+    on_pull_requests: false
     rooms:
       - secure: >-
-          dJ43ETubVT61o88+Ow2hwPp/6MiWFmRd232H70UTfyCoyqHL9/KW4wP8cqoqR99ha2kjx0uYzzeMTEsYLF8a0Oo3OXIKHgymERKgTVThJWx/BX7aw4tUS05UeJuZf2GkkGVnEw02ucX5pCuv05IdbOTKO4okYrVkM2iyHFGHGij8ceg/0w4FVXINKSXnU2kycBtra+Zmrm1LE69Awms95qrxgeawfeZiD6ghQ3AoCpdF85/rpZSHawwwt1OcbuUamVLcnQLvpTSFJBOspoy8ghZBqCanlrjrwoknqc7GRenAo6qEoZZbzCG8eOAk6f15FMxYyH8Gv8X6CopJJsct39vkLf2STdJp2EGfL81GlQ51qN0zOadybms6bD0abOEAdilFrSZYK97mdzY27KmVUYME0MoVzYT3/NpQNW9dhwWCSkLIvOXpMWFVDUP9zDZxn033zGJn7iLaZr9x+oagUM+qw+1jmIjpUSzgytmgQnwAvochdhloVmT/ddunjYgbKtn/cJH7wEaa4Eftagn3jRjzZ37oln/sYM83ydc+GGyjepSzic8eldfdkwnHCKhKR/2dmJ2v76Mz2Q0sHJHGXH9XEDZoEhcIa0yvP1TNj97ZdzK+pkk0hgma+22yqfD/uPQ/iaoKwvEKMR9PXg6QoKRBP3MZLheHK5HFlvuFnU8=
+          Drr2B7ZfhNHdQZa/4SuwmILuA2RTVA07+u+hGc6EWQy/nKSklVYxJEGjCm2UDUWi6i7LuWWY6mNmCZ/bBcEsUulFd7mkp9cHdxFxbl7AlKdJQKM4m9SPmfXDqbkjnpkxd6tXUcTLc6+av5fNlrMrSlwL9m3rrh9lN7UWEEp2lYDpcN4Dge6luIbPtVkVIBSVsnTRQ1taBW+iBEWPTT6v5nrha2qKYFXX2/SLJkO5nLPOv/yWZLKsPHydst08w0yeV0hAXx0t2vMiDLl89KamH+MPjYOEvPe/p/FlqHGcOB4zRDd0Az97o/PllPlutwwgYeZEE/u9l6kSJR+QPNdpZEB6M37Sq5E7BKf2H+qwi4GVoBHZOToqfx/BjaI1tJKjw4XhjFllQhe/K7B8hOD6ugSI/fQoZSX1uVBEhZNh2Fm3r6QG07TuAcX8A6aTECMhhow+O5wXrd9pqh1e4U7pUHDDIzi+0SaWphy9jIjGWjz5BO8CKCiTzfpF0Pg2wD9yAV3ZFaryJQFSngKVXfVOn6JB5dOkMbmljhwCD4EmDocEeAEK7AfKdoMGUZKz7IrCI7SnaNv8rWbMJ+XEomRAzEHlhAaOjIB2y9szso3/JEknsTlBsmLe57Q49bEa5qtsrW8PcjzXQKQGcsiA+9kBBZPq/p6WmhHntPkXHG25B4Q=
   email: false
 before_install:
   - 'echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc'
