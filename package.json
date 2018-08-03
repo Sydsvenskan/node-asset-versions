@@ -23,17 +23,17 @@
   },
   "devDependencies": {
     "@hdsydsvenskan/eslint-config-hds": "^5.0.0",
-    "dependency-check": "^2.6.0",
-    "eslint": "^4.15.0",
-    "eslint-config-semistandard": "^12.0.0",
+    "dependency-check": "2.10.1",
+    "eslint": "4.19.1",
+    "eslint-config-semistandard": "12.0.1",
     "eslint-config-standard": "11.0.0-beta.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-node": "^5.2.1",
-    "eslint-plugin-promise": "^3.4.0",
-    "eslint-plugin-standard": "^3.0.1",
-    "eslint-plugin-unicorn": "^3.0.1",
-    "husky": "^0.14.3",
-    "installed-check": "^2.0.0"
+    "eslint-plugin-import": "2.13.0",
+    "eslint-plugin-node": "5.2.1",
+    "eslint-plugin-promise": "3.8.0",
+    "eslint-plugin-standard": "3.1.0",
+    "eslint-plugin-unicorn": "3.0.1",
+    "husky": "0.14.3",
+    "installed-check": "2.2.0"
   },
   "dependencies": {
     "@hdsydsvenskan/utils": "^2.4.0",
