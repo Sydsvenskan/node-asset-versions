@@ -22,7 +22,7 @@
     "asset-versions": "cli.js"
   },
   "devDependencies": {
-    "@hdsydsvenskan/eslint-config-hds": "^5.0.0",
+    "@hdsydsvenskan/eslint-config-hds": "^5.0.1",
     "dependency-check": "2.10.1",
     "eslint": "4.19.1",
     "eslint-config-semistandard": "12.0.1",
