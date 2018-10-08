@@ -15,7 +15,7 @@
     "prepush": "npm test"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=6.5.0"
   },
   "main": "index.js",
   "bin": {
