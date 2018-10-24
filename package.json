@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dependency-check": "JS_FILES=\"*.js\" && dependency-check . $JS_FILES && dependency-check . $JS_FILES --unused --no-dev",
-    "test": "installed-check -e -i eslint && eslint --ext .js --ext .jsx . && npm run --silent dependency-check"
+    "test": "installed-check -e -i eslint && eslint --ext .js --ext .jsx . && npm run --silent dependency-check && tsc"
   },
   "husky": {
     "hooks": {
@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@hdsydsvenskan/eslint-config-hds": "^8.0.0",
+    "@types/node": "^10.12.0",
     "dependency-check": "^3.2.1",
     "eslint": "^5.7.0",
     "eslint-config-standard": "^12.0.0",
@@ -38,7 +39,8 @@
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-unicorn": "^6.0.1",
     "husky": "^1.1.2",
-    "installed-check": "2.2.0"
+    "installed-check": "2.2.0",
+    "typescript": "^3.1.3"
   },
   "dependencies": {
     "@hdsydsvenskan/utils": "^2.21.0",

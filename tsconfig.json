@@ -1,0 +1,28 @@
+{
+  "files": [
+    "index.js",
+    "cli.js"
+  ],
+  // TODO: Separate out into its own shared repo
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "ES2016",
+    "module": "commonjs",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "types": [
+      "node"
+    ],
+    "noEmit": true,
+    "maxNodeModuleJsDepth": 2,
+    "jsx": "react",
+
+    /* Strict Type-Checking Options */
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+
+    /* Additional Checks */
+    "noUnusedLocals": true
+  }
+}

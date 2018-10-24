@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+
+// @ts-check
+/// <reference types="node" />
+
 'use strict';
 
 const dashdash = require('dashdash');
@@ -44,6 +48,7 @@ try {
 }
 
 if (opts.help) {
+  // @ts-ignore
   const help = parser.help().trimRight();
   console.log(
     '\n' +
@@ -85,5 +90,6 @@ objectPromiseAll(files.reduce((result, file) => {
 
   return result;
 }, {}))
+  // @ts-ignore
   .then(files => writeJsonFile(outputFile, { files }))
   .catch(err => setImmediate(() => { throw err; }));
