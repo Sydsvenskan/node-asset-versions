@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@hdsydsvenskan/utils": "^2.21.0",
-    "cp-file": "^4.1.1",
+    "cp-file": "^6.0.0",
     "dashdash": "^1.14.0",
     "rev-file": "^2.0.0",
     "write-json-file": "^3.0.0"
