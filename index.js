@@ -6,20 +6,29 @@
 const pathModule = require('path');
 const urlModule = require('url');
 
+/**
+ * @typedef {object} AssetVersionsOptions
+ * @property {string} assetDefinitions
+ * @property {boolean} [useVersionedPaths=true]
+ * @property {string} [versionsFileName='asset-versions.json']
+ */
+
 class AssetVersions {
-  constructor (options) {
-    options = options || {};
+  /**
+   * @param {AssetVersionsOptions} options
+   */
+  constructor ({ assetDefinitions, useVersionedPaths, versionsFileName }) {
+    if (!assetDefinitions || typeof assetDefinitions !== 'string') { throw new TypeError('Expected a non-empty assetDefinitions string'); }
+    if (versionsFileName && typeof versionsFileName !== 'string') { throw new TypeError('Expected versionsFileName to be a string'); }
 
-    if (!options.assetDefinitions) { throw new Error('assetDefinitions option is required'); }
+    this.definitionsPath = assetDefinitions;
+    this.useVersionedPaths = useVersionedPaths !== false;
+    this.versionsFileName = versionsFileName || 'asset-versions.json';
 
-    this.definitionsPath = options.assetDefinitions;
-    this.useVersionedPaths = options.useVersionedPaths !== false;
-    this.versionsFileName = options.versionsFileName || 'asset-versions.json';
-
-    this.loadAssetDefinitions();
+    this._loadAssetDefinitions();
   }
 
-  loadAssetDefinitions () {
+  _loadAssetDefinitions () {
     const { definitionsPath } = this;
     const definitionDir = pathModule.dirname(definitionsPath);
     const versionsPath = pathModule.resolve(definitionDir, this.versionsFileName);
@@ -51,6 +60,11 @@ class AssetVersions {
     this.definitions = result;
   }
 
+  /**
+   * Get the versioned asset path for a file
+   *
+   * @param {string} file The non-versioned name of a versioned file
+   */
   getAssetPath (file) {
     const definition = this.definitions[file];
 
@@ -61,5 +75,23 @@ class AssetVersions {
     return urlModule.resolve('/', definition);
   }
 }
+
+/**
+ * @param {object} baseAppInstance
+ * @param {AssetVersionsOptions} [options]
+ * @returns {{ pluginName: 'AssetVersions', main: AssetVersions }}
+ */
+AssetVersions.baseAppPlugin = function (baseAppInstance, options) {
+  if (!options || !options.assetDefinitions) {
+    options = Object.assign({}, options || {}, {
+      assetDefinitions: require('pkg-dir').sync(__dirname) + '/assets.json'
+    });
+  }
+
+  return {
+    pluginName: 'AssetVersions',
+    main: new AssetVersions(options)
+  };
+};
 
 module.exports = AssetVersions;
