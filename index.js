@@ -100,11 +100,10 @@ class AssetVersions {
  * @returns {{ pluginName: 'AssetVersions', main: AssetVersions }}
  */
 AssetVersions.baseAppPlugin = function (baseAppInstance, options) {
-  if (!options || !options.assetDefinitions) {
-    options = Object.assign({}, options || {}, {
-      assetDefinitions: require('pkg-dir').sync(__dirname) + '/assets.json'
-    });
-  }
+  options = Object.assign({
+    assetDefinitions: require('pkg-dir').sync(__dirname) + '/assets.json',
+    useVersionedPaths: baseAppInstance.getConfig().env !== 'development'
+  }, options || {});
 
   return {
     pluginName: 'AssetVersions',
