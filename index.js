@@ -11,34 +11,32 @@ const urlModule = require('url');
  * @property {string} assetDefinitions
  * @property {boolean} [useVersionedPaths=true]
  * @property {string} [versionsFileName='asset-versions.json']
- * @property {string} [webpackManifest='manifest.json']
  */
 
 class AssetVersions {
   /**
    * @param {AssetVersionsOptions} options
    */
-  constructor ({ assetDefinitions, useVersionedPaths, versionsFileName, webpackManifest }) {
+  constructor ({ assetDefinitions, useVersionedPaths, versionsFileName }) {
     if (!assetDefinitions || typeof assetDefinitions !== 'string') { throw new TypeError('Expected a non-empty assetDefinitions string'); }
     if (versionsFileName && typeof versionsFileName !== 'string') { throw new TypeError('Expected versionsFileName to be a string'); }
 
     this.definitionsPath = assetDefinitions;
     this.useVersionedPaths = useVersionedPaths !== false;
     this.versionsFileName = versionsFileName || 'asset-versions.json';
-    this.webpackManifest = webpackManifest || 'manifest.json';
 
     this._loadAssetDefinitions();
   }
 
   _loadAssetDefinitions () {
     const { definitionsPath } = this;
-    const { files, sourceDir } = require(definitionsPath);
+    const { files, sourceDir, webpackManifest } = require(definitionsPath);
 
     const definitionDir = pathModule.dirname(definitionsPath);
     const resolvedSourceDir = pathModule.resolve(definitionDir, sourceDir);
 
     const versionsPath = pathModule.resolve(definitionDir, this.versionsFileName);
-    const webpackManifestPath = pathModule.resolve(resolvedSourceDir, this.webpackManifest);
+    const webpackManifestPath = webpackManifest ? pathModule.resolve(resolvedSourceDir, webpackManifest) : undefined;
 
     const result = {};
 
@@ -53,7 +51,7 @@ class AssetVersions {
       }
     }
 
-    if (this.webpackManifest) {
+    if (webpackManifestPath) {
       try {
         webpackVersions = require(webpackManifestPath);
       } catch (err) {
