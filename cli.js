@@ -23,14 +23,14 @@ const options = [
     type: 'string',
     completionType: 'file',
     env: 'HDS_ASSETS_VERSIONING_PATH',
-    help: 'Folder of assets.json path',
+    help: 'Resolve paths against this path rather than current working directory',
     helpArg: 'PATH'
   },
   {
     names: ['output', 'o'],
     type: 'string',
     completionType: 'file',
-    help: 'Folder of assets.json path',
+    help: 'Name of output file',
     helpArg: 'FILE',
     default: 'asset-versions.json'
   }
@@ -73,18 +73,34 @@ const workingDir = opts.path || process.cwd();
 const outputFile = pathModule.resolve(workingDir, opts.output);
 const assetsOptions = require(pathModule.resolve(workingDir, 'assets.json'));
 
-const { files, sourceDir, targetDir } = assetsOptions;
+const { files, sourceDir, targetDir, webpackManifest } = assetsOptions;
+
+const resolvedSourceDir = pathModule.resolve(workingDir, sourceDir);
+const webpackFiles = webpackManifest
+  ? require(pathModule.resolve(resolvedSourceDir, webpackManifest))
+  : {};
+
+// Add all webpack files as well
+Object.keys(webpackFiles).forEach(file => {
+  if (!file.endsWith('.map') && !files.includes(file)) {
+    files.push(file);
+  }
+});
 
 objectPromiseAll(files.reduce((result, file) => {
-  const resolvedSourceDir = pathModule.resolve(workingDir, sourceDir);
   const sourcePath = pathModule.resolve(sourceDir, file);
 
-  result[file] = revFile(sourcePath)
+  // Has WebPack revved this for us already? Use that file then
+  const webpackRevvedSourcePath = webpackFiles[file]
+    ? pathModule.resolve(sourceDir, webpackFiles[file])
+    : undefined;
+
+  result[file] = Promise.resolve(webpackRevvedSourcePath || revFile(sourcePath))
     .then(target => {
       const targetFile = pathModule.relative(resolvedSourceDir, target);
       const targetPath = pathModule.resolve(workingDir, targetDir, targetFile);
 
-      return cpFile(sourcePath, targetPath)
+      return cpFile(webpackRevvedSourcePath || sourcePath, targetPath)
         .then(() => pathModule.relative(process.cwd(), targetPath));
     });
 
