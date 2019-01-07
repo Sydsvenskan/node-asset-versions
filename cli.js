@@ -75,6 +75,8 @@ const assetsOptions = require(pathModule.resolve(workingDir, 'assets.json'));
 
 const { files, sourceDir, targetDir, webpackManifest } = assetsOptions;
 
+const dependencies = {};
+
 const resolvedSourceDir = pathModule.resolve(workingDir, sourceDir);
 const webpackFiles = webpackManifest
   ? require(pathModule.resolve(resolvedSourceDir, webpackManifest))
@@ -89,11 +91,14 @@ Object.keys(webpackFiles).forEach(file => {
 
 objectPromiseAll(files.reduce((result, file) => {
   const sourcePath = pathModule.resolve(sourceDir, file);
+  const webpackFile = webpackFiles[file];
 
   // Has WebPack revved this for us already? Use that file then
-  const webpackRevvedSourcePath = webpackFiles[file]
-    ? pathModule.resolve(sourceDir, webpackFiles[file])
+  const webpackRevvedSourcePath = webpackFile
+    ? pathModule.resolve(sourceDir, webpackFile.path || webpackFile)
     : undefined;
+
+  dependencies[file] = webpackFile ? webpackFile.siblings : undefined;
 
   result[file] = Promise.resolve(webpackRevvedSourcePath || revFile(sourcePath))
     .then(target => {
@@ -107,5 +112,5 @@ objectPromiseAll(files.reduce((result, file) => {
   return result;
 }, {}))
   // @ts-ignore
-  .then(files => writeJsonFile(outputFile, { files }))
+  .then(files => writeJsonFile(outputFile, { files, dependencies }))
   .catch(err => setImmediate(() => { throw err; }));
