@@ -6,6 +6,8 @@
 const pathModule = require('path');
 const urlModule = require('url');
 
+const VError = require('verror');
+
 /**
  * @typedef {object} AssetVersionsOptions
  * @property {string} assetDefinitions
@@ -80,6 +82,9 @@ class AssetVersions {
     }
 
     const processFilePaths = (file) => {
+      if (!file || typeof file !== 'string') {
+        throw new TypeError(`Expected file to be a non-empty string, got ${file}`);
+      }
       const resolvedFilePath = pathModule.resolve(resolvedSourceDir, file);
       const relativeFilePath = pathModule.relative(definitionDir, resolvedFilePath);
       return { resolvedFilePath, relativeFilePath };
@@ -101,7 +106,11 @@ class AssetVersions {
 
       const siblings = (versions.dependencies || {})[file] || (webpackVersions[file] || {}).siblings || [];
 
-      dependencies[relativeFilePath] = siblings.map(sibling => processFilePaths(sibling).relativeFilePath);
+      try {
+        dependencies[relativeFilePath] = siblings.map(sibling => processFilePaths(sibling).relativeFilePath);
+      } catch (err) {
+        throw new VError(err, `Failed to resolve siblings for ${file}`);
+      }
     });
 
     this.definitions = result;
