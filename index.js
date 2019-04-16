@@ -209,7 +209,7 @@ AssetVersions.webpackManifestPluginGenerate = (seed, files) => {
   manifestFiles.forEach(key => {
     const item = manifest[key];
     item.siblings = item.siblings ? item.siblings.map(sibling => {
-      const matchingFile = manifestFiles.find(matchKey => manifest[matchKey].path === sibling);
+      const matchingFile = manifestFiles.find(matchKey => manifest[matchKey].path.endsWith(sibling));
 
       return matchingFile;
     }) : undefined;
