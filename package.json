@@ -10,8 +10,11 @@
     "url": "git://github.com/sydsvenskan/node-asset-versions.git"
   },
   "scripts": {
-    "dependency-check": "JS_FILES=\"*.js\" && dependency-check . $JS_FILES && dependency-check . $JS_FILES --unused --no-dev",
-    "test": "installed-check -e -i eslint && eslint --ext .js --ext .jsx . && npm run --silent dependency-check && tsc"
+    "check:dependency-check": "dependency-check *.js --no-dev",
+    "check:eslint": "eslint .",
+    "check:installed-check": "installed-check -i eslint",
+    "check:tsc": "tsc",
+    "test": "run-p check:*"
   },
   "husky": {
     "hooks": {
@@ -28,7 +31,7 @@
   "devDependencies": {
     "@hdsydsvenskan/eslint-config-hds": "^14.0.1",
     "@types/node": "^10.12.0",
-    "dependency-check": "^3.2.1",
+    "dependency-check": "^4.1.0",
     "eslint": "^6.6.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-es": "^2.0.0",
@@ -40,8 +43,9 @@
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-unicorn": "^12.1.0",
-    "husky": "^2.0.0",
-    "installed-check": "2.2.0",
+    "husky": "^3.0.9",
+    "installed-check": "^3.0.0",
+    "npm-run-all": "^4.1.5",
     "typescript": "^3.1.3"
   },
   "dependencies": {
