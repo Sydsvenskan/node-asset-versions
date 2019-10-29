@@ -43,6 +43,7 @@ let opts;
 try {
   opts = parser.parse(process.argv);
 } catch (err) {
+  // eslint-disable-next-line no-console
   console.error('Error:', err.message);
   process.exit(1);
 }
@@ -50,6 +51,7 @@ try {
 if (opts.help) {
   // @ts-ignore
   const help = parser.help().trimRight();
+  // eslint-disable-next-line no-console
   console.log(
     '\n' +
     'Usage: asset-versions\n\n' +
@@ -65,13 +67,15 @@ const pathModule = require('path');
 
 const cpFile = require('cp-file');
 const revFile = require('rev-file');
+const loadJsonFile = require('load-json-file');
 const writeJsonFile = require('write-json-file');
 
 const { objectPromiseAll } = require('@hdsydsvenskan/utils');
 
 const workingDir = opts.path || process.cwd();
 const outputFile = pathModule.resolve(workingDir, opts.output);
-const assetsOptions = require(pathModule.resolve(workingDir, 'assets.json'));
+/** @type {Object<string,any>} */
+const assetsOptions = loadJsonFile.sync(pathModule.resolve(workingDir, 'assets.json'));
 
 const { files, sourceDir, targetDir, webpackManifest } = assetsOptions;
 
@@ -79,7 +83,7 @@ const dependencies = {};
 
 const resolvedSourceDir = pathModule.resolve(workingDir, sourceDir);
 const webpackFiles = webpackManifest
-  ? require(pathModule.resolve(resolvedSourceDir, webpackManifest))
+  ? loadJsonFile.sync(pathModule.resolve(resolvedSourceDir, webpackManifest))
   : {};
 
 // Add all webpack files as well

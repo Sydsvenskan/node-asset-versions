@@ -4,9 +4,16 @@
 'use strict';
 
 const pathModule = require('path');
-const urlModule = require('url');
 
+const loadJsonFile = require('load-json-file');
 const VError = require('verror');
+
+/**
+ * @param {string} prefix
+ * @param {string} value
+ * @returns {string}
+ */
+const ensurePrefix = (prefix, value) => (value[0] === prefix ? '' : prefix) + value;
 
 /**
  * @typedef {object} AssetVersionsOptions
@@ -32,7 +39,7 @@ class AssetVersions {
 
   _loadAssetDefinitions () {
     const { definitionsPath } = this;
-    const { files, sourceDir, webpackManifest } = require(definitionsPath);
+    const { files, sourceDir, webpackManifest } = loadJsonFile.sync(definitionsPath);
 
     const definitionDir = pathModule.dirname(definitionsPath);
     const resolvedSourceDir = pathModule.resolve(definitionDir, sourceDir);
@@ -47,7 +54,7 @@ class AssetVersions {
 
     if (this.useVersionedPaths) {
       try {
-        versions = require(versionsPath);
+        versions = loadJsonFile.sync(versionsPath);
       } catch (err) {
         // It's okay for it not to exist
       }
@@ -55,7 +62,7 @@ class AssetVersions {
 
     if (webpackManifestPath) {
       try {
-        webpackVersions = require(webpackManifestPath);
+        webpackVersions = loadJsonFile.sync(webpackManifestPath);
       } catch (err) {
         // It's okay for it not to exist
       }
@@ -130,7 +137,7 @@ class AssetVersions {
       throw new Error(`Asset definition "${file}" not found`);
     }
 
-    return urlModule.resolve('/', definition);
+    return ensurePrefix('/', definition);
   }
 
   /**
@@ -142,7 +149,7 @@ class AssetVersions {
   getAssetPathWithDependencies (file) {
     const assetPaths = ((this.dependencies || {})[file] || [])
       .concat(file)
-      .map(asset => urlModule.resolve('/', this.getAssetPath(asset)));
+      .map(asset => ensurePrefix('/', this.getAssetPath(asset)));
 
     return assetPaths;
   }
