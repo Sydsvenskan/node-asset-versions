@@ -194,14 +194,14 @@ AssetVersions.webpackManifestPluginGenerate = (seed, files) => {
       siblings: isMap ? undefined : []
     };
 
-    for (let chunkGroup of chunkGroups) {
+    for (const chunkGroup of chunkGroups) {
       if (!chunkGroup.name) {
         continue;
       }
 
       const files = [];
 
-      for (let chunk of chunkGroup.chunks) {
+      for (const chunk of chunkGroup.chunks) {
         files.push(...chunk.files);
       }
 

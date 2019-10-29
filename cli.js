@@ -32,7 +32,7 @@ const options = [
     completionType: 'file',
     help: 'Name of output file',
     helpArg: 'FILE',
-    default: 'asset-versions.json'
+    'default': 'asset-versions.json'
   }
 ];
 
