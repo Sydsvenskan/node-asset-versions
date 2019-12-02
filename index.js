@@ -9,6 +9,18 @@ const loadJsonFile = require('load-json-file');
 const VError = require('verror');
 
 /**
+ * @param {string} path
+ * @returns {any}
+ */
+const silentSyncLoadJsonFile = (path) => {
+  try {
+    return loadJsonFile.sync(path);
+  } catch (err) {
+    // It's okay for it not to exist
+  }
+};
+
+/**
  * @param {string} prefix
  * @param {string} value
  * @returns {string}
@@ -37,6 +49,24 @@ class AssetVersions {
     this._loadAssetDefinitions();
   }
 
+  /**
+   * @param {string} resolvedSourceDir
+   * @param {string|string[]} webpackManifests
+   * @returns {Object<string,any>}
+   */
+  _loadWebpackVersions (resolvedSourceDir, webpackManifests) {
+    let webpackVersions = {};
+
+    for (const manifest of [].concat(webpackManifests)) {
+      const webpackManifestPath = pathModule.resolve(resolvedSourceDir, manifest);
+      const result = silentSyncLoadJsonFile(webpackManifestPath);
+
+      webpackVersions = Object.assign(webpackVersions, result);
+    }
+
+    return webpackVersions;
+  }
+
   _loadAssetDefinitions () {
     const { definitionsPath } = this;
     const { files, sourceDir, webpackManifest } = loadJsonFile.sync(definitionsPath);
@@ -45,49 +75,23 @@ class AssetVersions {
     const resolvedSourceDir = pathModule.resolve(definitionDir, sourceDir);
 
     const versionsPath = pathModule.resolve(definitionDir, this.versionsFileName);
-    const webpackManifestPath = webpackManifest ? pathModule.resolve(resolvedSourceDir, webpackManifest) : undefined;
 
     const result = {};
+    const webpackVersions = webpackManifest ? this._loadWebpackVersions(resolvedSourceDir, webpackManifest) : {};
 
-    let versions = {};
-    let webpackVersions = {};
-
-    if (this.useVersionedPaths) {
-      try {
-        versions = loadJsonFile.sync(versionsPath);
-      } catch (err) {
-        // It's okay for it not to exist
-      }
-    }
-
-    if (webpackManifestPath) {
-      try {
-        webpackVersions = loadJsonFile.sync(webpackManifestPath);
-      } catch (err) {
-        // It's okay for it not to exist
-      }
-    }
-
+    const versions = this.useVersionedPaths ? silentSyncLoadJsonFile(versionsPath) : {};
     const fileVersions = (versions.files || {});
     const dependencies = {};
-    const allFiles = [].concat(files);
+    const allFiles = new Set([
+      ...files,
+      ...Object.keys(fileVersions),
+      ...Object.keys(webpackVersions)
+    ]);
 
-    if (versions && versions.files) {
-      Object.keys(versions.files).forEach(file => {
-        if (!allFiles.includes(file)) {
-          allFiles.push(file);
-        }
-      });
-    }
-
-    if (webpackVersions) {
-      Object.keys(webpackVersions).forEach(file => {
-        if (!allFiles.includes(file)) {
-          allFiles.push(file);
-        }
-      });
-    }
-
+    /**
+     * @param {string} file
+     * @returns {{ resolvedFilePath: string, relativeFilePath: string }}
+     */
     const processFilePaths = (file) => {
       if (!file || typeof file !== 'string') {
         throw new TypeError(`Expected file to be a non-empty string, got ${file}`);
@@ -97,7 +101,7 @@ class AssetVersions {
       return { resolvedFilePath, relativeFilePath };
     };
 
-    allFiles.forEach(file => {
+    for (const file of allFiles) {
       const { resolvedFilePath, relativeFilePath } = processFilePaths(file);
 
       const webpackFile = webpackVersions[file]
@@ -111,6 +115,7 @@ class AssetVersions {
 
       result[relativeFilePath] = relativeTargetFilePath;
 
+      /** @type {string[]} */
       const siblings = (versions.dependencies || {})[file] || (webpackVersions[file] || {}).siblings || [];
 
       try {
@@ -118,7 +123,7 @@ class AssetVersions {
       } catch (err) {
         throw new VError(err, `Failed to resolve siblings for ${file}`);
       }
-    });
+    }
 
     this.definitions = result;
     this.dependencies = dependencies;
