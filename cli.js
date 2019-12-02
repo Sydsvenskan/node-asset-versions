@@ -50,7 +50,7 @@ try {
 
 if (opts.help) {
   // @ts-ignore
-  const help = parser.help().trimRight();
+  const help = parser.help().trimEnd();
   // eslint-disable-next-line no-console
   console.log(
     '\n' +
