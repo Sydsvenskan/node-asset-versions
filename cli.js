@@ -72,6 +72,8 @@ const writeJsonFile = require('write-json-file');
 
 const { objectPromiseAll } = require('@hdsydsvenskan/utils');
 
+const { loadWebpackVersions } = require('./utils/webpack');
+
 const workingDir = opts.path || process.cwd();
 const outputFile = pathModule.resolve(workingDir, opts.output);
 /** @type {Object<string,any>} */
@@ -82,9 +84,7 @@ const { files, sourceDir, targetDir, webpackManifest } = assetsOptions;
 const dependencies = {};
 
 const resolvedSourceDir = pathModule.resolve(workingDir, sourceDir);
-const webpackFiles = webpackManifest
-  ? loadJsonFile.sync(pathModule.resolve(resolvedSourceDir, webpackManifest))
-  : {};
+const webpackFiles = webpackManifest ? loadWebpackVersions(resolvedSourceDir, webpackManifest) : {};
 
 // Add all webpack files as well
 Object.keys(webpackFiles).forEach(file => {

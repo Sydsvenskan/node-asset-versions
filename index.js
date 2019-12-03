@@ -8,24 +8,14 @@ const pathModule = require('path');
 const loadJsonFile = require('load-json-file');
 const VError = require('verror');
 
-/**
- * @param {string} path
- * @returns {any}
- */
-const silentSyncLoadJsonFile = (path) => {
-  try {
-    return loadJsonFile.sync(path);
-  } catch (err) {
-    // It's okay for it not to exist
-  }
-};
+const {
+  ensurePrefix,
+  silentSyncLoadJsonFile
+} = require('./utils/misc');
 
-/**
- * @param {string} prefix
- * @param {string} value
- * @returns {string}
- */
-const ensurePrefix = (prefix, value) => (value[0] === prefix ? '' : prefix) + value;
+const {
+  loadWebpackVersions
+} = require('./utils/webpack');
 
 /**
  * @typedef {object} AssetVersionsOptions
@@ -49,24 +39,6 @@ class AssetVersions {
     this._loadAssetDefinitions();
   }
 
-  /**
-   * @param {string} resolvedSourceDir
-   * @param {string|string[]} webpackManifests
-   * @returns {Object<string,any>}
-   */
-  _loadWebpackVersions (resolvedSourceDir, webpackManifests) {
-    let webpackVersions = {};
-
-    for (const manifest of [].concat(webpackManifests)) {
-      const webpackManifestPath = pathModule.resolve(resolvedSourceDir, manifest);
-      const result = silentSyncLoadJsonFile(webpackManifestPath);
-
-      webpackVersions = Object.assign(webpackVersions, result);
-    }
-
-    return webpackVersions;
-  }
-
   _loadAssetDefinitions () {
     const { definitionsPath } = this;
     const { files, sourceDir, webpackManifest } = loadJsonFile.sync(definitionsPath);
@@ -77,7 +49,7 @@ class AssetVersions {
     const versionsPath = pathModule.resolve(definitionDir, this.versionsFileName);
 
     const result = {};
-    const webpackVersions = webpackManifest ? this._loadWebpackVersions(resolvedSourceDir, webpackManifest) : {};
+    const webpackVersions = webpackManifest ? loadWebpackVersions(resolvedSourceDir, webpackManifest) : {};
 
     const versions = this.useVersionedPaths ? silentSyncLoadJsonFile(versionsPath) : {};
     const fileVersions = (versions.files || {});
