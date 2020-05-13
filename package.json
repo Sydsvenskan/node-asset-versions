@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@hdsydsvenskan/utils": "^4.19.0",
-    "cp-file": "^7.0.0",
+    "cp-file": "^9.0.0",
     "dashdash": "^1.14.0",
     "load-json-file": "^6.2.0",
     "pkg-dir": "^4.1.0",
