@@ -32,6 +32,7 @@
     "@hdsydsvenskan/eslint-config-hds": "^20.0.1",
     "@hdsydsvenskan/eslint-config-hds-core": "^2.0.1",
     "@types/node": "^10.17.6",
+    "@types/webpack": "^4.41.12",
     "dependency-check": "^4.1.0",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
@@ -47,10 +48,14 @@
     "husky": "^4.2.5",
     "installed-check": "^3.0.0",
     "npm-run-all": "^4.1.5",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.2",
+    "webpack": "^4.43.0",
+    "webpack-manifest-plugin": "^2.2.0"
   },
   "dependencies": {
     "@hdsydsvenskan/utils": "^4.19.0",
+    "@types/verror": "^1.10.3",
+    "@types/webpack-manifest-plugin": "^2.1.0",
     "cp-file": "^9.0.0",
     "dashdash": "^1.14.0",
     "load-json-file": "^6.2.0",

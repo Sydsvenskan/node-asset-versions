@@ -108,7 +108,7 @@ class AssetVersions {
    * @returns {string}
    */
   getAssetPath (file) {
-    const definition = this.definitions[file];
+    const definition = this.definitions && this.definitions[file];
 
     if (!definition) {
       throw new Error(`Asset definition "${file}" not found`);
@@ -149,7 +149,9 @@ AssetVersions.baseAppPlugin = function (baseAppInstance, options) {
   };
 };
 
-/** @typedef {Object<string,{path: string, siblings?: string[]}>} AssetVersionsWebpackManifest */
+/** @typedef {import('webpack').compilation.Chunk} Chunk */
+/** @typedef {import('webpack-manifest-plugin').FileDescriptor & { chunk: Chunk }} FileDescriptor */
+/** @typedef {{ [filename: string]: {path: string, siblings?: string[]} }} AssetVersionsWebpackManifest */
 
 /**
  * For use with https://github.com/danethurber/webpack-manifest-plugin
@@ -158,23 +160,23 @@ AssetVersions.baseAppPlugin = function (baseAppInstance, options) {
  * and https://github.com/danethurber/webpack-manifest-plugin/issues/181#issuecomment-445277384
  *
  * @param {Object<string,any>} seed
- * @param {Object<string,any>[]} files
+ * @param {FileDescriptor[]} files
  * @returns {AssetVersionsWebpackManifest}
  */
 AssetVersions.webpackManifestPluginGenerate = (seed, files) => {
   /** @type {AssetVersionsWebpackManifest} */
   const manifest = Object.assign({}, seed);
 
-  files.forEach((file) => {
-    if (!file.chunk || !file.chunk.groupsIterable) {
-      return;
+  for (const { name, chunk, path } of files) {
+    if (!name || !chunk || !chunk.groupsIterable) {
+      continue;
     }
 
-    const chunkGroups = file.chunk.groupsIterable;
-    const isMap = file.name.slice(-4) === `.map`;
+    const chunkGroups = chunk.groupsIterable;
+    const isMap = name.slice(-4) === `.map`;
 
-    manifest[file.name] = {
-      path: file.path,
+    manifest[name] = {
+      path,
       siblings: isMap ? undefined : []
     };
 
@@ -189,24 +191,32 @@ AssetVersions.webpackManifestPluginGenerate = (seed, files) => {
         files.push(...chunk.files);
       }
 
-      files.forEach(filename => {
-        if (!isMap && filename !== file.path && filename.slice(-4) !== `.map`) {
-          manifest[file.name].siblings.push(filename);
+      for (const filename in files) {
+        if (!isMap && filename !== path && filename.slice(-4) !== `.map`) {
+          const siblings = manifest[name].siblings;
+          if (siblings) siblings.push(filename);
         }
-      });
+      }
     }
-  });
+  }
 
   const manifestFiles = Object.keys(manifest);
 
-  manifestFiles.forEach(key => {
+  for (const key of manifestFiles) {
     const item = manifest[key];
-    item.siblings = item.siblings ? item.siblings.map(sibling => {
-      const matchingFile = manifestFiles.find(matchKey => manifest[matchKey].path.endsWith(sibling));
 
-      return matchingFile;
-    }) : undefined;
-  });
+    if (item.siblings) {
+      /** @type {string[]} */
+      const resolvedSiblings = [];
+
+      for (const sibling in item.siblings) {
+        const matchingFile = manifestFiles.find(matchKey => manifest[matchKey].path.endsWith(sibling));
+        if (matchingFile !== undefined) resolvedSiblings.push(matchingFile);
+      }
+
+      item.siblings = resolvedSiblings;
+    }
+  }
 
   return manifest;
 };
