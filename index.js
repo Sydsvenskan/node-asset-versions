@@ -181,10 +181,6 @@ AssetVersions.webpackManifestPluginGenerate = (seed, files) => {
     };
 
     for (const chunkGroup of chunkGroups) {
-      if (!chunkGroup.name) {
-        continue;
-      }
-
       const files = [];
 
       for (const chunk of chunkGroup.chunks) {
