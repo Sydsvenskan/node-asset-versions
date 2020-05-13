@@ -9,16 +9,20 @@ const {
   silentSyncLoadJsonFile
 } = require('./misc');
 
+/** @typedef {import('..').AssetVersionsWebpackManifest} AssetVersionsWebpackManifest */
+
 /**
  * @param {string} resolvedSourceDir
  * @param {string|string[]} webpackManifests
- * @returns {Object<string,any>}
+ * @returns {AssetVersionsWebpackManifest}
  */
 const loadWebpackVersions = (resolvedSourceDir, webpackManifests) => {
+  /** @type {AssetVersionsWebpackManifest} */
   let webpackVersions = {};
 
-  for (const manifest of [].concat(webpackManifests)) {
+  for (const manifest of Array.isArray(webpackManifests) ? webpackManifests : [webpackManifests]) {
     const webpackManifestPath = pathModule.resolve(resolvedSourceDir, manifest);
+    /** @type {AssetVersionsWebpackManifest|undefined}  */
     const result = silentSyncLoadJsonFile(webpackManifestPath);
 
     webpackVersions = Object.assign(webpackVersions, result);

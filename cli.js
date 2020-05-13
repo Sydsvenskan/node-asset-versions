@@ -95,14 +95,26 @@ Object.keys(webpackFiles).forEach(file => {
 
 objectPromiseAll(files.reduce((result, file) => {
   const sourcePath = pathModule.resolve(sourceDir, file);
-  const webpackFile = webpackFiles[file];
+  const webpackFileRaw = webpackFiles[file];
+
+  /** @type {string|undefined} */
+  let webpackFile;
+  /** @type {string[]|undefined} */
+  let webpackFileSiblings;
+
+  if (typeof webpackFileRaw === 'string') {
+    webpackFile = webpackFileRaw;
+  } else if (typeof webpackFileRaw === 'object') {
+    webpackFile = webpackFileRaw.path;
+    webpackFileSiblings = webpackFileRaw.siblings;
+  }
 
   // Has WebPack revved this for us already? Use that file then
   const webpackRevvedSourcePath = webpackFile
-    ? pathModule.resolve(sourceDir, webpackFile.path || webpackFile)
+    ? pathModule.resolve(sourceDir, webpackFile)
     : undefined;
 
-  dependencies[file] = webpackFile ? webpackFile.siblings : undefined;
+  dependencies[file] = webpackFileSiblings;
 
   result[file] = Promise.resolve(webpackRevvedSourcePath || revFile(sourcePath))
     .then(target => {

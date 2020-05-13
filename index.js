@@ -76,9 +76,16 @@ class AssetVersions {
     for (const file of allFiles) {
       const { resolvedFilePath, relativeFilePath } = processFilePaths(file);
 
-      const webpackFile = webpackVersions[file]
-        ? (webpackVersions[file].path || webpackVersions[file])
-        : undefined;
+      const webpackFileRaw = webpackVersions[file];
+
+      /** @type {string|undefined} */
+      let webpackFile;
+
+      if (typeof webpackFileRaw === 'string') {
+        webpackFile = webpackFileRaw;
+      } else if (typeof webpackFileRaw === 'object') {
+        webpackFile = webpackFileRaw.path;
+      }
 
       const resolvedTargetFilePath = webpackFile
         ? pathModule.resolve(resolvedSourceDir, webpackFile)
