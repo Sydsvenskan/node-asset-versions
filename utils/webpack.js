@@ -9,7 +9,7 @@ const {
   silentSyncLoadJsonFile
 } = require('./misc');
 
-/** @typedef {import('..').AssetVersionsWebpackManifest} AssetVersionsWebpackManifest */
+/** @typedef {import('./manifest-generator').AssetVersionsWebpackManifest} AssetVersionsWebpackManifest */
 
 /**
  * @param {string} resolvedSourceDir
