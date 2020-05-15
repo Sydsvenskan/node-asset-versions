@@ -7,8 +7,10 @@ import bar from './modules/chunked-module';
 
 /** @param {string} text */
 const print = (text) => {
-  document.documentElement.appendChild(document.createTextNode(text));
-  document.documentElement.appendChild(document.createElement('br'));
+  const container = document.querySelector('body');
+  if (!container) return;
+  container.appendChild(document.createTextNode(text));
+  container.appendChild(document.createElement('br'));
 };
 
 print(foo());

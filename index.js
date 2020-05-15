@@ -17,11 +17,12 @@ const {
   loadWebpackVersions
 } = require('./utils/webpack');
 
+// FIXME: Enable one to load the assetDefinitions oneself
 /**
  * @typedef {object} AssetVersionsOptions
- * @property {string} assetDefinitions
- * @property {boolean} [useVersionedPaths=true]
- * @property {string} [versionsFileName='asset-versions.json']
+ * @property {string} assetDefinitions - Path to the asset manifest you have created
+ * @property {boolean} [useVersionedPaths=true] - If set to false then the original, non-versioned, files will be used
+ * @property {string} [versionsFileName='asset-versions.json'] - Path to the file containing the data about the generated versions
  */
 
 class AssetVersions {
@@ -161,6 +162,7 @@ AssetVersions.baseAppPlugin = function (baseAppInstance, options) {
 /** @typedef {Omit<import('webpack-manifest-plugin').FileDescriptor, 'chunk'> & { chunk?: ManifestChunk | Chunk }} FileDescriptor */
 /** @typedef {{ [filename: string]: {path: string, siblings?: string[]} }} AssetVersionsWebpackManifest */
 
+// FIXME: Extract into its own file
 /**
  * For use with https://github.com/danethurber/webpack-manifest-plugin
  *
@@ -195,7 +197,7 @@ AssetVersions.webpackManifestPluginGenerate = (seed, files) => {
         files.push(...chunk.files);
       }
 
-      for (const filename in files) {
+      for (const filename of files) {
         if (!isMap && filename !== path && filename.slice(-4) !== `.map`) {
           const siblings = manifest[name].siblings;
           if (siblings) siblings.push(filename);
@@ -213,7 +215,7 @@ AssetVersions.webpackManifestPluginGenerate = (seed, files) => {
       /** @type {string[]} */
       const resolvedSiblings = [];
 
-      for (const sibling in item.siblings) {
+      for (const sibling of item.siblings) {
         const matchingFile = manifestFiles.find(matchKey => manifest[matchKey].path.endsWith(sibling));
         if (matchingFile !== undefined) resolvedSiblings.push(matchingFile);
       }

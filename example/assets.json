@@ -1,6 +1,6 @@
 {
-  "sourceDir": "assets/bare",
-  "targetDir": "assets/rev/",
+  "sourceDir": "dist/bare",
+  "targetDir": "dist/rev/",
   "webpackManifest": [
     "manifest.json"
   ],

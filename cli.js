@@ -5,6 +5,7 @@
 
 'use strict';
 
+const debug = require('debug')('asset-versions');
 const dashdash = require('dashdash');
 
 const options = [
@@ -69,6 +70,7 @@ const cpFile = require('cp-file');
 const revFile = require('rev-file');
 const loadJsonFile = require('load-json-file');
 const writeJsonFile = require('write-json-file');
+const VError = require('verror');
 
 const { objectPromiseAll } = require('@hdsydsvenskan/utils');
 
@@ -86,6 +88,9 @@ const dependencies = {};
 const resolvedSourceDir = pathModule.resolve(workingDir, sourceDir);
 const webpackFiles = webpackManifest ? loadWebpackVersions(resolvedSourceDir, webpackManifest) : {};
 
+debug('working dir: %s', workingDir);
+debug('resolved source dir: %s', resolvedSourceDir);
+
 // Add all webpack files as well
 Object.keys(webpackFiles).forEach(file => {
   if (!file.endsWith('.map') && !files.includes(file)) {
@@ -94,15 +99,16 @@ Object.keys(webpackFiles).forEach(file => {
 });
 
 objectPromiseAll(files.reduce((result, file) => {
-  const sourcePath = pathModule.resolve(sourceDir, file);
+  const sourcePath = pathModule.resolve(resolvedSourceDir, file);
   const webpackFileRaw = webpackFiles[file];
+
+  debug('file "%s" has source path: %s', file, sourcePath);
 
   /** @type {string|undefined} */
   let webpackFile;
   /** @type {string[]|undefined} */
   let webpackFileSiblings;
 
-  console.log('🚣🏻‍♀️', file, webpackFileRaw);
   if (typeof webpackFileRaw === 'string') {
     webpackFile = webpackFileRaw;
   } else if (typeof webpackFileRaw === 'object') {
@@ -112,22 +118,31 @@ objectPromiseAll(files.reduce((result, file) => {
 
   // Has WebPack revved this for us already? Use that file then
   const webpackRevvedSourcePath = webpackFile
-    ? pathModule.resolve(sourceDir, webpackFile)
+    ? pathModule.resolve(resolvedSourceDir, webpackFile)
     : undefined;
+
+  debug('file "%s" has webpack path: %s', file, webpackRevvedSourcePath);
 
   dependencies[file] = webpackFileSiblings;
 
   result[file] = Promise.resolve(webpackRevvedSourcePath || revFile(sourcePath))
-    .then(target => {
+    .catch(err => { throw new VError(err, 'Failed to rev file'); })
+    .then(async target => {
       const targetFile = pathModule.relative(resolvedSourceDir, target);
       const targetPath = pathModule.resolve(workingDir, targetDir, targetFile);
 
-      return cpFile(webpackRevvedSourcePath || sourcePath, targetPath)
-        .then(() => pathModule.relative(process.cwd(), targetPath));
-    });
+      await cpFile(webpackRevvedSourcePath || sourcePath, targetPath);
+
+      return pathModule.relative(workingDir, targetPath);
+    })
+    .catch(err => { throw new VError(err, 'Failed to copy file'); });
 
   return result;
 }, {}))
   // @ts-ignore
   .then(files => writeJsonFile(outputFile, { files, dependencies }))
-  .catch(err => setImmediate(() => { throw err; }));
+  .catch(err => {
+    // eslint-disable-next-line no-console
+    console.error('Encountered an error:', err.stack);
+    process.exit(1);
+  });

@@ -1,5 +1,5 @@
 const foo = () => {
-  return 'hello';
+  return 'This is printed from the main bundle.';
 };
 
 export default foo;

@@ -1,3 +1,3 @@
 export const lazy = () => {
-  return '👋';
+  return 'This is printed from a lazy loaded chunk.';
 };
