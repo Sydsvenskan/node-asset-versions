@@ -7,7 +7,6 @@
   "include": [
     "example/src/**/*",
   ],
-  // TODO: Separate out into its own shared repo
   "compilerOptions": {
     /* Basic Options */
     "target": "ES2016",
