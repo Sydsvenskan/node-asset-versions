@@ -1,0 +1,11 @@
+{
+  "sourceDir": "assets/bare",
+  "targetDir": "assets/rev/",
+  "webpackManifest": [
+    "manifest.json"
+  ],
+  "files": [
+    "main.css",
+    "main.js"
+  ]
+}

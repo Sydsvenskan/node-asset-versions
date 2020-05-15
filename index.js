@@ -157,7 +157,8 @@ AssetVersions.baseAppPlugin = function (baseAppInstance, options) {
 };
 
 /** @typedef {import('webpack').compilation.Chunk} Chunk */
-/** @typedef {import('webpack-manifest-plugin').FileDescriptor & { chunk: Chunk }} FileDescriptor */
+/** @typedef {import('webpack-manifest-plugin').Chunk} ManifestChunk */
+/** @typedef {Omit<import('webpack-manifest-plugin').FileDescriptor, 'chunk'> & { chunk?: ManifestChunk | Chunk }} FileDescriptor */
 /** @typedef {{ [filename: string]: {path: string, siblings?: string[]} }} AssetVersionsWebpackManifest */
 
 /**
@@ -166,7 +167,7 @@ AssetVersions.baseAppPlugin = function (baseAppInstance, options) {
  * Inspired by https://github.com/gatsbyjs/gatsby/blob/52c13f633533729b4f737d459ea52c39f40ccf33/packages/gatsby/src/utils/webpack.config.js#L211-L251
  * and https://github.com/danethurber/webpack-manifest-plugin/issues/181#issuecomment-445277384
  *
- * @param {Object<string,any>} seed
+ * @param {object|AssetVersionsWebpackManifest} seed
  * @param {FileDescriptor[]} files
  * @returns {AssetVersionsWebpackManifest}
  */

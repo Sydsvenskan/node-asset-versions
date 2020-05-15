@@ -1,21 +1,24 @@
-/node_modules
-
-# Local environment variables
-/.env
-
-# We're a library, so please, no yarn.lock
-/yarn.lock
-
-# Test things
+# Basic ones
 /coverage
-
-eshu.sublime-project
-eshu.sublime-workspace
-*.swp
-*.swo
-*.tern-port
+/docs
+/node_modules
+/.env
+/.nyc_output
 
 # Please..
 .DS_Store
 npm-debug.log
-newrelic_agent.log
+yarn-error.log
+
+# We're a library, so please, also no lock files
+/package-lock.json
+/yarn.lock
+
+# Library specific ones
+*.d.ts
+/example/dist/**/*.js
+/example/dist/**/*.map
+/example/dist/**/*.json
+
+# Due to many complexities, allow yarn.lock
+!yarn.lock

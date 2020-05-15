@@ -102,6 +102,7 @@ objectPromiseAll(files.reduce((result, file) => {
   /** @type {string[]|undefined} */
   let webpackFileSiblings;
 
+  console.log('🚣🏻‍♀️', file, webpackFileRaw);
   if (typeof webpackFileRaw === 'string') {
     webpackFile = webpackFileRaw;
   } else if (typeof webpackFileRaw === 'object') {
