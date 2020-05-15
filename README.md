@@ -1,10 +1,6 @@
 # Asset Versions
 
-CLI and helper methods for our asset versions
-
-## Requirements
-
-Requires at least Node.js 6.x
+CLI and helper methods for asset versioning. Includes support for Webpack chunking.
 
 ## Installation
 
@@ -19,6 +15,10 @@ Follow [Semantic Versioning](http://semver.org/) and use [np](https://www.npmjs.
 ```bash
 np patch
 ```
+
+## Example
+
+See a full example, including Webpack support, in [example/](./example) folder and/or run the `start` npm script (run `yarn start` / `npm start`).
 
 ## Usage
 
