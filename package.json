@@ -54,7 +54,7 @@
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-unicorn": "^19.0.1",
-    "html-escaper": "^2.0.0",
+    "html-escaper": "^3.0.0",
     "http-server": "^0.12.3",
     "husky": "^4.2.5",
     "installed-check": "^3.0.0",
