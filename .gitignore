@@ -18,6 +18,7 @@ yarn-error.log
 *.d.ts
 /example/dist
 /example/asset-versions.json
+/example/asset-versions-sourcemaps.json
 
 # Due to many complexities, allow yarn.lock
 !yarn.lock

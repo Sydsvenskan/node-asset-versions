@@ -1,0 +1,28 @@
+{
+	"files": {
+		"main.css": "dist/rev/main-1e0840afd5.css",
+		"main.js": "dist/rev/main.b0d2da5553e91f2eda06.js",
+		"internal.js": "dist/rev/internal.474af3f1b516bf419cc2.js",
+		"internal.js.map": "dist/rev/internal.474af3f1b516bf419cc2.js.map",
+		"lazy.js": "dist/rev/lazy.bfbca080e93a94fb8399.js",
+		"lazy.js.map": "dist/rev/lazy.bfbca080e93a94fb8399.js.map",
+		"main.js.map": "dist/rev/main.b0d2da5553e91f2eda06.js.map",
+		"runtime.js": "dist/rev/runtime.1f80a7f72d942962fd9d.js",
+		"runtime.js.map": "dist/rev/runtime.1f80a7f72d942962fd9d.js.map"
+	},
+	"dependencies": {
+		"main.js": [
+			"runtime.js",
+			"internal.js"
+		],
+		"internal.js": [
+			"runtime.js",
+			"main.js"
+		],
+		"lazy.js": [],
+		"runtime.js": [
+			"internal.js",
+			"main.js"
+		]
+	}
+}
