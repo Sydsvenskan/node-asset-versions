@@ -16,7 +16,8 @@ yarn-error.log
 
 # Library specific ones
 *.d.ts
-/example/dist
+/example/dist/bare/*
+/example/dist/rev/*
 /example/asset-versions.json
 
 # Due to many complexities, allow yarn.lock
