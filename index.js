@@ -52,7 +52,7 @@ class AssetVersions {
     const webpackVersions = webpackManifest ? loadWebpackVersions(resolvedSourceDir, webpackManifest) : {};
 
     const versions = this.useVersionedPaths ? silentSyncLoadJsonFile(versionsPath) : {};
-    const fileVersions = (versions.files || {});
+    const fileVersions = ((versions || {}).files || {});
     const dependencies = {};
     const allFiles = new Set([
       ...files,
@@ -95,7 +95,7 @@ class AssetVersions {
       result[relativeFilePath] = relativeTargetFilePath;
 
       /** @type {string[]} */
-      const siblings = (versions.dependencies || {})[file] || (webpackVersions[file] || {}).siblings || [];
+      const siblings = ((versions || {}).dependencies || {})[file] || (webpackVersions[file] || {}).siblings || [];
 
       try {
         dependencies[relativeFilePath] = siblings.map(sibling => processFilePaths(sibling).relativeFilePath);

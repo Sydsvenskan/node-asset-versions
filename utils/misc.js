@@ -14,7 +14,7 @@ const ensurePrefix = (prefix, value) => (value[0] === prefix ? '' : prefix) + va
 
 /**
  * @param {string} path
- * @returns {any}
+ * @returns {Object<string,any> | undefined}
  */
 const silentSyncLoadJsonFile = (path) => {
   try {
