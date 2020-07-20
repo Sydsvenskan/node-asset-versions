@@ -1,10 +1,10 @@
 {
 	"files": {
 		"main.css": "dist/rev/main-1e0840afd5.css",
-		"main.js": "dist/rev/main.b0d2da5553e91f2eda06.js",
-		"internal.js": "dist/rev/internal.474af3f1b516bf419cc2.js",
-		"lazy.js": "dist/rev/lazy.bfbca080e93a94fb8399.js",
-		"runtime.js": "dist/rev/runtime.1f80a7f72d942962fd9d.js"
+		"main.js": "dist/rev/main.7207f07624bb415ba257.js",
+		"internal.js": "dist/rev/internal.e7130703cbcbd61b989d.js",
+		"lazy.js": "dist/rev/lazy.dfbd52dc3b18f42a9249.js",
+		"runtime.js": "dist/rev/runtime.7845eec1df183fbac714.js"
 	},
 	"dependencies": {
 		"main.js": [
