@@ -16,7 +16,7 @@
     "build": "run-s build:*",
     "build-test:css": "cp example/src/main.css example/dist/bare/main.css",
     "build-test:js": "webpack --mode='production' --devtool hidden-source-map  --config example/webpack.config.js --output-public-path /dist/rev/",
-    "build-test": "run-p build:* && rm -rf example/dist/rev && node cli.js -p example",
+    "build-test": "run-p build-test:* && rm -rf example/dist/rev && node cli.js -p example",
     "check:dependency-check": "dependency-check *.js --no-dev -i @types/*",
     "check:eslint": "eslint .",
     "check:installed-check": "installed-check -i eslint",
