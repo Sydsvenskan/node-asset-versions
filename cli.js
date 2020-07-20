@@ -40,6 +40,12 @@ const options = [
     help: 'Name of output file',
     helpArg: 'FILE',
     'default': 'asset-versions.json'
+  },
+  {
+    names: ['source-maps', 's'],
+    type: 'bool',
+    help: 'Include source-map entries when adding WebPack files',
+    'default': false
   }
 ];
 
@@ -50,6 +56,7 @@ const parser = dashdash.createParser({ options });
  * @property {boolean} [help]
  * @property {string} [output]
  * @property {string} [path]
+ * @property {boolean} [source_maps]
  * @property {string[]} [_args]
  */
 
@@ -79,6 +86,7 @@ if (opts.help) {
 
 delete opts._args;
 
+const includeSourceMaps = opts.source_maps;
 const workingDir = opts.path || process.cwd();
 const outputFile = pathModule.resolve(workingDir, opts.output);
 
@@ -102,7 +110,7 @@ loadAssetsOptions(workingDir).then(async ({ files, sourceDir, targetDir, webpack
 
   // Add all webpack files as well
   Object.keys(webpackFiles).forEach(file => {
-    if (!file.endsWith('.map') && !files.includes(file)) {
+    if (!files.includes(file) && !(file.endsWith('.map') && !includeSourceMaps)) {
       files.push(file);
     }
   });
