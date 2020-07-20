@@ -34,6 +34,12 @@ const options = [
     help: 'Name of output file',
     helpArg: 'FILE',
     'default': 'asset-versions.json'
+  },
+  {
+    names: ['source-maps', 's'],
+    type: 'bool',
+    help: 'Include source-map entries when adding WebPack files',
+    'default': false
   }
 ];
 
@@ -61,6 +67,8 @@ if (opts.help) {
   );
   process.exit(0);
 }
+
+const includeSourceMaps = opts.source_maps;
 
 delete opts._args;
 
@@ -93,7 +101,7 @@ debug('resolved source dir: %s', resolvedSourceDir);
 
 // Add all webpack files as well
 Object.keys(webpackFiles).forEach(file => {
-  if (!file.endsWith('.map') && !files.includes(file)) {
+  if (!files.includes(file) && !(file.endsWith('.map') && !includeSourceMaps)) {
     files.push(file);
   }
 });

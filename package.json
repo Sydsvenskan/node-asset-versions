@@ -10,9 +10,10 @@
     "url": "git://github.com/sydsvenskan/node-asset-versions.git"
   },
   "scripts": {
+    "build:01-make-folders": "mkdir -p example/dist/bare/",
     "build:css": "cp example/src/main.css example/dist/bare/main.css",
     "build:js": "webpack --mode='production' --devtool hidden-source-map  --config example/webpack.config.js --output-public-path /dist/rev/",
-    "build": "run-p build:* && rm -rf example/dist/rev && node cli.js -p example",
+    "build": "run-p build:* && rm -rf example/dist/rev && node cli.js -p example && node cli.js -s -p example -o asset-versions-sourcemaps.json",
     "check:dependency-check": "dependency-check *.js --no-dev -i @types/*",
     "check:eslint": "eslint .",
     "check:installed-check": "installed-check -i eslint",
@@ -20,6 +21,7 @@
     "start": "run-s build && node example/app.js",
     "test:example:manifest": "diff --ignore-all-space example/example-manifest.json example/dist/bare/manifest.json",
     "test:example:versions": "diff --ignore-all-space example/example-asset-versions.json example/asset-versions.json",
+    "test:example:sourcemaps": "diff --ignore-all-space example/example-asset-versions-sourcemaps.json example/asset-versions-sourcemaps.json",
     "test:example": "run-s build && run-p test:example:*",
     "test:mocha": "NODE_ENV=test nyc --reporter=lcov --reporter text mocha --reporter dot test/**/*.spec.js",
     "test": "run-p check:* && run-p test:*"
