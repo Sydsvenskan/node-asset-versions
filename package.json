@@ -52,6 +52,7 @@
   "devDependencies": {
     "@hdsydsvenskan/eslint-config-hds": "^20.0.3",
     "@hdsydsvenskan/eslint-config-hds-core": "^2.0.2",
+    "@hdsydsvenskan/ts-ignore-import": "^2.0.0",
     "@types/chai": "^4.2.11",
     "@types/debug": "^4.1.5",
     "@types/mocha": "^8.0.0",
