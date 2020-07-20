@@ -10,6 +10,9 @@ const VError = require('verror');
 
 const {
   ensurePrefix,
+  resolveJsonStringArray,
+  resolveJsonObject,
+  resolveJsonStringValueObject,
   silentSyncLoadJsonFile
 } = require('./lib/misc');
 
@@ -52,8 +55,10 @@ class AssetVersions {
     const result = new Map();
     const webpackVersions = webpackManifest ? loadWebpackVersions(resolvedSourceDir, webpackManifest) : {};
 
-    const versions = this.useVersionedPaths ? silentSyncLoadJsonFile(versionsPath) : {};
-    const fileVersions = (versions.files || {});
+    const versions = resolveJsonObject(this.useVersionedPaths && silentSyncLoadJsonFile(versionsPath), 'asset versions file');
+    const fileVersions = resolveJsonStringValueObject(versions.files, 'versions.files');
+    const fileDependencies = resolveJsonObject(versions.dependencies, 'versions.dependencies');
+
     /** @type {Map<string, string[]>} */
     const dependencies = new Map();
     const allFiles = new Set([
@@ -97,8 +102,9 @@ class AssetVersions {
 
       result.set(relativeFilePath, relativeTargetFilePath);
 
+      const versionsSiblings = fileDependencies[file] ? resolveJsonStringArray(fileDependencies[file], 'versions.dependencies') : undefined;
       /** @type {string[]} */
-      const siblings = (versions.dependencies || {})[file] || (webpackVersions[file] || {}).siblings || [];
+      const siblings = versionsSiblings || (webpackVersions[file] || {}).siblings || [];
 
       try {
         const dependencyPaths = siblings.map(sibling => processFilePaths(sibling).relativeFilePath);

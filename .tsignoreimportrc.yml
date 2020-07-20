@@ -1,2 +1,3 @@
 allow:
+  - type-fest
 tsConfig: tsconfig.json

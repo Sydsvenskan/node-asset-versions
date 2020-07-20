@@ -17,7 +17,7 @@
     "build-test:css": "cp example/src/main.css example/dist/bare/main.css",
     "build-test:js": "webpack --mode='production' --devtool hidden-source-map  --config example/webpack.config.js --output-public-path /dist/rev/",
     "build-test": "run-p build-test:* && rm -rf example/dist/rev && node cli.js -p example",
-    "check:dependency-check": "dependency-check *.js --no-dev -i @types/*",
+    "check:dependency-check": "dependency-check *.js --no-dev -i @types/* -i type-fest",
     "check:eslint": "eslint .",
     "check:installed-check": "installed-check -i eslint",
     "check:tsc": "tsc",
@@ -88,6 +88,7 @@
     "load-json-file": "^6.2.0",
     "pkg-dir": "^4.1.0",
     "rev-file": "^3.0.0",
+    "type-fest": "^0.16.0",
     "verror": "^1.10.0",
     "write-json-file": "^4.2.1"
   }
