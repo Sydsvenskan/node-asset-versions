@@ -49,8 +49,8 @@
     "asset-versions": "cli.js"
   },
   "devDependencies": {
-    "@hdsydsvenskan/eslint-config-hds": "^20.0.1",
-    "@hdsydsvenskan/eslint-config-hds-core": "^2.0.1",
+    "@hdsydsvenskan/eslint-config-hds": "^20.0.3",
+    "@hdsydsvenskan/eslint-config-hds-core": "^2.0.2",
     "@types/chai": "^4.2.11",
     "@types/debug": "^4.1.5",
     "@types/mocha": "^8.0.0",
@@ -62,8 +62,8 @@
     "dependency-check": "^4.1.0",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-es": "^3.0.0",
-    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-es": "^3.0.1",
+    "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsdoc": "^24.0.2",
     "eslint-plugin-mocha": "^6.3.0",
     "eslint-plugin-node": "^11.1.0",
