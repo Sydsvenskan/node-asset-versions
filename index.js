@@ -48,12 +48,14 @@ class AssetVersions {
 
     const versionsPath = pathModule.resolve(definitionDir, this.versionsFileName);
 
-    const result = {};
+    /** @type {Map<string, string>} */
+    const result = new Map();
     const webpackVersions = webpackManifest ? loadWebpackVersions(resolvedSourceDir, webpackManifest) : {};
 
     const versions = this.useVersionedPaths ? silentSyncLoadJsonFile(versionsPath) : {};
     const fileVersions = (versions.files || {});
-    const dependencies = {};
+    /** @type {Map<string, string[]>} */
+    const dependencies = new Map();
     const allFiles = new Set([
       ...files,
       ...Object.keys(fileVersions),
@@ -90,15 +92,17 @@ class AssetVersions {
       const resolvedTargetFilePath = webpackFile
         ? pathModule.resolve(resolvedSourceDir, webpackFile)
         : resolvedFilePath;
+        /** @type {string} */
       const relativeTargetFilePath = fileVersions[file] || pathModule.relative(definitionDir, resolvedTargetFilePath);
 
-      result[relativeFilePath] = relativeTargetFilePath;
+      result.set(relativeFilePath, relativeTargetFilePath);
 
       /** @type {string[]} */
       const siblings = (versions.dependencies || {})[file] || (webpackVersions[file] || {}).siblings || [];
 
       try {
-        dependencies[relativeFilePath] = siblings.map(sibling => processFilePaths(sibling).relativeFilePath);
+        const dependencyPaths = siblings.map(sibling => processFilePaths(sibling).relativeFilePath);
+        dependencies.set(relativeFilePath, dependencyPaths);
       } catch (err) {
         throw new VError(err, `Failed to resolve siblings for ${file}`);
       }
@@ -115,7 +119,7 @@ class AssetVersions {
    * @returns {string}
    */
   getAssetPath (file) {
-    const definition = this.definitions && this.definitions[file];
+    const definition = this.definitions && this.definitions.get(file);
 
     if (!definition) {
       throw new Error(`Asset definition "${file}" not found`);
@@ -131,7 +135,8 @@ class AssetVersions {
    * @returns {string[]}
    */
   getAssetPathWithDependencies (file) {
-    const assetPaths = ((this.dependencies || {})[file] || [])
+    const dependencies = (this.dependencies && this.dependencies.get(file)) || [];
+    const assetPaths = dependencies
       .concat(file)
       .map(asset => ensurePrefix('/', this.getAssetPath(asset)));
 
@@ -140,6 +145,8 @@ class AssetVersions {
 }
 
 /**
+ * Internal plugin definition for @Sydsvenskan
+ *
  * @param {object} baseAppInstance
  * @param {AssetVersionsOptions} [options]
  * @returns {{ pluginName: 'AssetVersions', main: AssetVersions }}
@@ -147,6 +154,7 @@ class AssetVersions {
 AssetVersions.baseAppPlugin = function (baseAppInstance, options) {
   options = Object.assign({
     assetDefinitions: require('pkg-dir').sync(__dirname) + '/assets.json',
+    // @ts-ignore
     useVersionedPaths: baseAppInstance.getConfig().env !== 'development'
   }, options || {});
 
