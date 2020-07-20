@@ -1,5 +1,7 @@
 *
-
-!/*.js
-!/utils/*.js
-!/utils/**/*.js
+!*.js
+!*.d.ts
+!/lib/*.js
+!/lib/*.d.ts
+!/lib/**/*.js
+!/lib/**/*.d.ts
