@@ -11,14 +11,14 @@ const VError = require('verror');
 const {
   ensurePrefix,
   silentSyncLoadJsonFile
-} = require('./utils/misc');
+} = require('./lib/misc');
 
 const {
   loadWebpackVersions
-} = require('./utils/webpack');
+} = require('./lib/webpack');
 
 /**
- * @typedef {object} AssetVersionsOptions
+ * @typedef AssetVersionsOptions
  * @property {string} assetDefinitions - Path to the asset manifest you have created
  * @property {boolean} [useVersionedPaths=true] - If set to false then the original, non-versioned, files will be used
  * @property {string} [versionsFileName='asset-versions.json'] - Path to the file containing the data about the generated versions
@@ -164,6 +164,6 @@ AssetVersions.baseAppPlugin = function (baseAppInstance, options) {
   };
 };
 
-AssetVersions.webpackManifestPluginGenerate = require('./utils/manifest-generator');
+AssetVersions.webpackManifestPluginGenerate = require('./lib/manifest-generator');
 
 module.exports = AssetVersions;
