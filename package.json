@@ -80,7 +80,6 @@
     "webpack-manifest-plugin": "^2.2.0"
   },
   "dependencies": {
-    "@hdsydsvenskan/utils": "^4.19.0",
     "@types/verror": "^1.10.4",
     "@types/webpack-manifest-plugin": "^2.1.0",
     "cp-file": "^9.0.0",
