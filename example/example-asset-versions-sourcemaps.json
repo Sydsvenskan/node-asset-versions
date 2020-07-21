@@ -1,28 +1,32 @@
 {
+	"version": 2,
 	"files": {
-		"main.css": "dist/rev/main-1e0840afd5.css",
-		"main.js": "dist/rev/main.7207f07624bb415ba257.js",
-		"internal.js": "dist/rev/internal.e7130703cbcbd61b989d.js",
-		"internal.js.map": "dist/rev/internal.e7130703cbcbd61b989d.js.map",
-		"lazy.js": "dist/rev/lazy.dfbd52dc3b18f42a9249.js",
-		"lazy.js.map": "dist/rev/lazy.dfbd52dc3b18f42a9249.js.map",
-		"main.js.map": "dist/rev/main.7207f07624bb415ba257.js.map",
-		"runtime.js": "dist/rev/runtime.7845eec1df183fbac714.js",
-		"runtime.js.map": "dist/rev/runtime.7845eec1df183fbac714.js.map"
+		"main.css": "dist/rev/main-37a5be468c.css",
+		"internal.e7130703cbcbd61b989d.js": "dist/rev/internal.e7130703cbcbd61b989d.js",
+		"internal.e7130703cbcbd61b989d.js.map": "dist/rev/internal.e7130703cbcbd61b989d.js.map",
+		"lazy.dfbd52dc3b18f42a9249.js": "dist/rev/lazy.dfbd52dc3b18f42a9249.js",
+		"lazy.dfbd52dc3b18f42a9249.js.map": "dist/rev/lazy.dfbd52dc3b18f42a9249.js.map",
+		"main.7207f07624bb415ba257.js": "dist/rev/main.7207f07624bb415ba257.js",
+		"main.7207f07624bb415ba257.js.map": "dist/rev/main.7207f07624bb415ba257.js.map",
+		"runtime.7845eec1df183fbac714.js": "dist/rev/runtime.7845eec1df183fbac714.js",
+		"runtime.7845eec1df183fbac714.js.map": "dist/rev/runtime.7845eec1df183fbac714.js.map",
+		"lazy.9baa1f3abc282ca225f0.js": "dist/rev/lazy.9baa1f3abc282ca225f0.js",
+		"lazy.9baa1f3abc282ca225f0.js.map": "dist/rev/lazy.9baa1f3abc282ca225f0.js.map",
+		"legacy.83b8f97ff2272c92b172.js": "dist/rev/legacy.83b8f97ff2272c92b172.js",
+		"legacy.83b8f97ff2272c92b172.js.map": "dist/rev/legacy.83b8f97ff2272c92b172.js.map"
 	},
 	"dependencies": {
-		"main.js": [
-			"runtime.js",
-			"internal.js"
+		"internal.e7130703cbcbd61b989d.js": [
+			"runtime.7845eec1df183fbac714.js",
+			"main.7207f07624bb415ba257.js"
 		],
-		"internal.js": [
-			"runtime.js",
-			"main.js"
+		"main.7207f07624bb415ba257.js": [
+			"runtime.7845eec1df183fbac714.js",
+			"internal.e7130703cbcbd61b989d.js"
 		],
-		"lazy.js": [],
-		"runtime.js": [
-			"internal.js",
-			"main.js"
+		"runtime.7845eec1df183fbac714.js": [
+			"internal.e7130703cbcbd61b989d.js",
+			"main.7207f07624bb415ba257.js"
 		]
 	}
 }

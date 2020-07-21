@@ -13,12 +13,25 @@ const {
   resolveJsonStringArray,
   resolveJsonObject,
   resolveJsonStringValueObject,
+  resolveJsonStringArrayValueObject,
   silentSyncLoadJsonFile
 } = require('./lib/misc');
 
 const {
   loadWebpackVersions
 } = require('./lib/webpack');
+
+/** @typedef {2} AssetVersionsFileDefinitionVersion */
+
+/** @type {AssetVersionsFileDefinitionVersion} */
+const ASSET_VERSIONS_FILE_VERSION = 2;
+
+/**
+ * @typedef AssetVersionsFileDefinition
+ * @property {ASSET_VERSIONS_FILE_VERSION} version
+ * @property {{ [file: string]: string[]|undefined }} dependencies
+ * @property {{ [file: string]: string }} files
+ */
 
 /**
  * @typedef AssetVersionsOptions
@@ -42,6 +55,28 @@ class AssetVersions {
     this._loadAssetDefinitions();
   }
 
+  /**
+   * @param {string} definitionDir
+   * @returns {Omit<AssetVersionsFileDefinition, 'version'>}
+   */
+  _loadVersionedPaths (definitionDir) {
+    if (!this.useVersionedPaths) return { files: {}, dependencies: {} };
+
+    const versionsPath = pathModule.resolve(definitionDir, this.versionsFileName);
+
+    const rawVersions = resolveJsonObject(this.useVersionedPaths && silentSyncLoadJsonFile(versionsPath), 'asset versions file');
+
+    if (rawVersions && (typeof rawVersions.version !== 'number' || rawVersions.version !== ASSET_VERSIONS_FILE_VERSION)) {
+      throw new Error(`Unexpected definition version in asset versions file. Expected ${ASSET_VERSIONS_FILE_VERSION}, found ${rawVersions.version}`);
+    }
+
+    const files = rawVersions ? resolveJsonStringValueObject(rawVersions.files, 'versions.files') : {};
+
+    const dependencies = rawVersions ? resolveJsonStringArrayValueObject(rawVersions.dependencies, 'versions.dependencies') : {};
+
+    return { files, dependencies };
+  }
+
   _loadAssetDefinitions () {
     const { definitionsPath } = this;
     const { files, sourceDir, webpackManifest } = loadJsonFile.sync(definitionsPath);
@@ -49,22 +84,24 @@ class AssetVersions {
     const definitionDir = pathModule.dirname(definitionsPath);
     const resolvedSourceDir = pathModule.resolve(definitionDir, sourceDir);
 
-    const versionsPath = pathModule.resolve(definitionDir, this.versionsFileName);
+    const {
+      files: fileVersions,
+      dependencies: fileDependencies,
+    } = this._loadVersionedPaths(definitionDir);
+    const webpackFiles = webpackManifest ? loadWebpackVersions(resolvedSourceDir, webpackManifest) : {};
 
+    /** @type {Set<string>} */
+    const hasMultipleTargets = new Set();
     /** @type {Map<string, string>} */
-    const result = new Map();
-    const webpackVersions = webpackManifest ? loadWebpackVersions(resolvedSourceDir, webpackManifest) : {};
-
-    const versions = resolveJsonObject(this.useVersionedPaths && silentSyncLoadJsonFile(versionsPath), 'asset versions file');
-    const fileVersions = resolveJsonStringValueObject(versions.files, 'versions.files');
-    const fileDependencies = resolveJsonObject(versions.dependencies, 'versions.dependencies');
-
+    const definitions = new Map();
     /** @type {Map<string, string[]>} */
     const dependencies = new Map();
+
+    /** @type {Set<string>} */
     const allFiles = new Set([
       ...files,
       ...Object.keys(fileVersions),
-      ...Object.keys(webpackVersions)
+      ...Object.keys(webpackFiles)
     ]);
 
     /**
@@ -83,28 +120,30 @@ class AssetVersions {
     for (const file of allFiles) {
       const { resolvedFilePath, relativeFilePath } = processFilePaths(file);
 
-      const webpackFileRaw = webpackVersions[file];
+      const webpackDefinition = webpackFiles[file];
+      const webpackAliasTarget = Array.isArray(webpackDefinition) ? webpackDefinition[0] : undefined;
+      const webpackAliasTargetDefinition = webpackAliasTarget ? webpackFiles[webpackAliasTarget] : undefined;
 
-      /** @type {string|undefined} */
-      let webpackFile;
-
-      if (typeof webpackFileRaw === 'string') {
-        webpackFile = webpackFileRaw;
-      } else if (typeof webpackFileRaw === 'object') {
-        webpackFile = webpackFileRaw.path;
+      if (webpackAliasTargetDefinition && Array.isArray(webpackAliasTargetDefinition)) {
+        throw new Error('A list of aliases pointing to a list of aliases? That is weird and should not be possible');
+      }
+      if (Array.isArray(webpackDefinition) && webpackDefinition.length > 1) {
+        hasMultipleTargets.add(relativeFilePath);
       }
 
-      const resolvedTargetFilePath = webpackFile
-        ? pathModule.resolve(resolvedSourceDir, webpackFile)
+      const resolvedTargetFilePath = webpackAliasTarget
+        ? pathModule.resolve(resolvedSourceDir, webpackAliasTarget)
         : resolvedFilePath;
-        /** @type {string} */
-      const relativeTargetFilePath = fileVersions[file] || pathModule.relative(definitionDir, resolvedTargetFilePath);
 
-      result.set(relativeFilePath, relativeTargetFilePath);
+      const targetFile = webpackAliasTarget || file;
 
-      const versionsSiblings = fileDependencies[file] ? resolveJsonStringArray(fileDependencies[file], 'versions.dependencies') : undefined;
-      /** @type {string[]} */
-      const siblings = versionsSiblings || (webpackVersions[file] || {}).siblings || [];
+      /** @type {string} */
+      const relativeTargetFilePath = fileVersions[targetFile] || pathModule.relative(definitionDir, resolvedTargetFilePath);
+
+      definitions.set(relativeFilePath, relativeTargetFilePath);
+
+      const versionsSiblings = fileDependencies[targetFile] ? resolveJsonStringArray(fileDependencies[targetFile], 'versions.dependencies') : undefined;
+      const siblings = versionsSiblings || (webpackAliasTargetDefinition && webpackAliasTargetDefinition.siblings) || [];
 
       try {
         const dependencyPaths = siblings.map(sibling => processFilePaths(sibling).relativeFilePath);
@@ -114,7 +153,8 @@ class AssetVersions {
       }
     }
 
-    this.definitions = result;
+    this.hasMultipleTargets = hasMultipleTargets;
+    this.definitions = definitions;
     this.dependencies = dependencies;
   }
 
@@ -125,6 +165,10 @@ class AssetVersions {
    * @returns {string}
    */
   getAssetPath (file) {
+    if (this.hasMultipleTargets && this.hasMultipleTargets.has(file)) {
+      throw new Error(`Asset definition "${file}" is an alias with many possible targets. Impossible to resolve.`);
+    }
+
     const definition = this.definitions && this.definitions.get(file);
 
     if (!definition) {
@@ -171,5 +215,6 @@ AssetVersions.baseAppPlugin = function (baseAppInstance, options) {
 };
 
 AssetVersions.webpackManifestPluginGenerate = require('./lib/manifest-generator');
+AssetVersions.ASSET_VERSIONS_FILE_VERSION = ASSET_VERSIONS_FILE_VERSION;
 
 module.exports = AssetVersions;

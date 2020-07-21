@@ -1,6 +1,10 @@
 body {
-  background-color: #666;
+  background-color: #ccc;
+  color: #000;
   font-family: 'Courier New', Courier, monospace;
   font-size: 50px;
   text-align: center;
+}
+a {
+  color: #009;
 }

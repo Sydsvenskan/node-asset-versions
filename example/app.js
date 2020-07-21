@@ -30,15 +30,25 @@ const server = http.createServer((req, res) => {
   if (assetContent.has(req.url)) {
     console.log('Serving asset:', req.url);
 
+    if (req.url.endsWith('.css')) res.setHeader('Content-Type', 'text/css');
+    if (req.url.endsWith('.js')) res.setHeader('Content-Type', 'text/javascript');
+
     res.write(assetContent.get(req.url));
-  } else if (req.url === '/') {
+  } else if (req.url === '/' || req.url === '/legacy') {
     console.log('Serving root page');
 
+    const isLegacy = req.url === '/legacy';
+
     const css = assets.getAssetPath('dist/bare/main.css');
-    const js = assets.getAssetPathWithDependencies('dist/bare/main.js');
+    const js = assets.getAssetPathWithDependencies(isLegacy ? 'dist/bare/legacy.js' : 'dist/bare/main.js');
 
     res.setHeader('Content-Type', 'text/html');
-    res.write(`<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><link href="${escape(css)}" rel="stylesheet" /></head><body>`);
+    res.write(`<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><title>Asset Versions Demo Example</title><link href="${escape(css)}" rel="stylesheet" /></head><body>`);
+    if (isLegacy) {
+      res.write('<a href="/">Go to non-legacy version</a><br/>');
+    } else {
+      res.write('<a href="/legacy">Go to legacy version</a><br/>');
+    }
     for (const file of js) {
       res.write(`<script src="${escape(file)}"></script>`);
     }

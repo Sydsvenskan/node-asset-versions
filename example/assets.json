@@ -2,10 +2,12 @@
   "sourceDir": "dist/bare",
   "targetDir": "dist/rev/",
   "webpackManifest": [
-    "manifest.json"
+    "manifest.json",
+    "manifest-legacy.json"
   ],
   "files": [
     "main.css",
-    "main.js"
+    "main.js",
+    "legacy.js"
   ]
 }

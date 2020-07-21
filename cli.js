@@ -95,11 +95,14 @@ const outputFile = pathModule.resolve(workingDir, opts.output);
 const { loadAssetsOptions } = require('./lib/asset-options');
 const { resolveAndCopyFile } = require('./lib/copy-file');
 const { loadWebpackVersions } = require('./lib/webpack');
+const { ASSET_VERSIONS_FILE_VERSION } = require('.');
+
+/** @typedef {import('./index').AssetVersionsFileDefinition} AssetVersionsFileDefinition */
 
 loadAssetsOptions(workingDir).then(async ({ files, sourceDir, targetDir, webpackManifest }) => {
-  /** @type {{ [file: string]: string[]|undefined }} */
+  /** @type {AssetVersionsFileDefinition["dependencies"]} */
   const dependencies = {};
-  /** @type {{ [file: string]: string }} */
+  /** @type {AssetVersionsFileDefinition["files"]} */
   const copiedFiles = {};
 
   const resolvedSourceDir = pathModule.resolve(workingDir, sourceDir);
@@ -122,10 +125,14 @@ loadAssetsOptions(workingDir).then(async ({ files, sourceDir, targetDir, webpack
     { resolvedSourceDir, workingDir, targetDir, webpackFiles, debug }
   )));
 
-  await writeJsonFile(outputFile, {
+  /** @type {AssetVersionsFileDefinition} */
+  const definition = {
+    version: ASSET_VERSIONS_FILE_VERSION,
     files: copiedFiles,
-    dependencies
-  });
+    dependencies,
+  };
+
+  await writeJsonFile(outputFile, definition);
 })
   .catch(/** @param {Error} err */ err => {
     // eslint-disable-next-line no-console
