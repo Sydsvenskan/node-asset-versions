@@ -7,7 +7,7 @@
 		"main.7207f07624bb415ba257.js": "dist/rev/main.7207f07624bb415ba257.js",
 		"runtime.7845eec1df183fbac714.js": "dist/rev/runtime.7845eec1df183fbac714.js",
 		"lazy.9baa1f3abc282ca225f0.js": "dist/rev/lazy.9baa1f3abc282ca225f0.js",
-		"legacy.e21da03533ee49e8eb09.js": "dist/rev/legacy.e21da03533ee49e8eb09.js"
+		"legacy.ec898fcde7adf983517f.js": "dist/rev/legacy.ec898fcde7adf983517f.js"
 	},
 	"dependencies": {
 		"internal.e7130703cbcbd61b989d.js": [
