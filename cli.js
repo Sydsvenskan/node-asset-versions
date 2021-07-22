@@ -88,6 +88,7 @@ delete opts._args;
 
 const includeSourceMaps = opts.source_maps;
 const workingDir = opts.path || process.cwd();
+// @ts-ignore - Complains about opts.output maybe being undefined, but it defaults to string via parsed args.
 const outputFile = pathModule.resolve(workingDir, opts.output);
 
 // *** Tool setup ***

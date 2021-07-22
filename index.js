@@ -56,6 +56,10 @@ class AssetVersions {
   }
 
   /**
+   * Loads the generated asset versions file and returns the versioned
+   * files and dependencies found therein.
+   * If versioned paths are not desired, this will return empty dummy objects.
+   *
    * @param {string} definitionDir
    * @returns {Omit<AssetVersionsFileDefinition, 'version'>}
    */
@@ -77,13 +81,23 @@ class AssetVersions {
     return { files, dependencies };
   }
 
+  /**
+   * Loads:
+   * 1. List of settings and desired file names
+   * 2. List of versioned files and their dependencies
+   * 3. Manifests created by webpack-manifest-plugin
+   *    and the versioned files found therein
+   */
   _loadAssetDefinitions () {
     const { definitionsPath } = this;
+
+    // Loads the file defining assets names and settings (webpack manifests etc)
     const { files, sourceDir, webpackManifest } = loadJsonFile.sync(definitionsPath);
 
     const definitionDir = pathModule.dirname(definitionsPath);
     const resolvedSourceDir = pathModule.resolve(definitionDir, sourceDir);
 
+    // Grab the generated lits of versioned files and their dependencies:
     const {
       files: fileVersions,
       dependencies: fileDependencies,
@@ -120,9 +134,16 @@ class AssetVersions {
     for (const file of allFiles) {
       const { resolvedFilePath, relativeFilePath } = processFilePaths(file);
 
+      // This section is to do with some form of reference between
+      // recurring file names in the webpack manifest, and a way to resolve them.
+      // Messy, but seems to work.
       const webpackDefinition = webpackFiles[file];
-      const webpackAliasTarget = Array.isArray(webpackDefinition) ? webpackDefinition[0] : undefined;
-      const webpackAliasTargetDefinition = webpackAliasTarget ? webpackFiles[webpackAliasTarget] : undefined;
+      const webpackAliasTarget = Array.isArray(webpackDefinition)
+        ? webpackDefinition[0]
+        : undefined;
+      const webpackAliasTargetDefinition = webpackAliasTarget
+        ? webpackFiles[webpackAliasTarget]
+        : undefined;
 
       if (webpackAliasTargetDefinition && Array.isArray(webpackAliasTargetDefinition)) {
         throw new Error('A list of aliases pointing to a list of aliases? That is weird and should not be possible');
@@ -136,14 +157,24 @@ class AssetVersions {
         : resolvedFilePath;
 
       const targetFile = webpackAliasTarget || file;
+      // – end of messy bit.
 
       /** @type {string} */
-      const relativeTargetFilePath = fileVersions[targetFile] || pathModule.relative(definitionDir, resolvedTargetFilePath);
+      const relativeTargetFilePath = (
+        fileVersions[targetFile] ||
+        pathModule.relative(definitionDir, resolvedTargetFilePath)
+      );
 
       definitions.set(relativeFilePath, relativeTargetFilePath);
 
-      const versionsSiblings = fileDependencies[targetFile] ? resolveJsonStringArray(fileDependencies[targetFile], 'versions.dependencies') : undefined;
-      const siblings = versionsSiblings || (webpackAliasTargetDefinition && webpackAliasTargetDefinition.siblings) || [];
+      const versionsSiblings = fileDependencies[targetFile]
+        ? resolveJsonStringArray(fileDependencies[targetFile], 'versions.dependencies')
+        : undefined;
+      const siblings = (
+        versionsSiblings ||
+        (webpackAliasTargetDefinition && webpackAliasTargetDefinition.siblings) ||
+        []
+      );
 
       try {
         const dependencyPaths = siblings.map(sibling => processFilePaths(sibling).relativeFilePath);
