@@ -7,7 +7,7 @@ const path = require('path');
 
 const webpack = require('webpack');
 
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 const { webpackManifestPluginGenerate } = require('..');
 
@@ -52,7 +52,7 @@ module.exports = {
   },
   plugins: [
     new webpack.HashedModuleIdsPlugin(),
-    new ManifestPlugin({
+    new WebpackManifestPlugin({
       fileName: 'manifest-legacy.json',
       publicPath: '',
       generate: webpackManifestPluginGenerate
