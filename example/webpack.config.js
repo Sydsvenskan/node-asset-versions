@@ -8,7 +8,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 const { webpackManifestPluginGenerate } = require('..');
 
@@ -48,7 +48,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin({ cleanOnceBeforeBuildPatterns: ['*.js', '*.js.map'] }),
     new webpack.HashedModuleIdsPlugin(),
-    new ManifestPlugin({
+    new WebpackManifestPlugin({
       publicPath: '',
       generate: webpackManifestPluginGenerate
     })
