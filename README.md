@@ -70,5 +70,4 @@ Create a `assets.json` file:
 
 ## Extras
 
-* *AssetVersions.baseAppPlugin* – for use with `@hdsydsvenskan/base-web-app`
 * *AssetVersions.webpackManifestPluginGenerate* – a `generate` method for use with [webpack-manifest-plugin](https://www.npmjs.com/package/webpack-manifest-plugin) to generate manifest with dependencies

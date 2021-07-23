@@ -96,7 +96,6 @@
     "dashdash": "^2.0.0",
     "debug": "^4.1.1",
     "load-json-file": "^6.2.0",
-    "pkg-dir": "^5.0.0",
     "rev-file": "^3.0.0",
     "type-fest": "^0.16.0",
     "verror": "^1.10.0",

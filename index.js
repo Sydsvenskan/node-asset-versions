@@ -225,26 +225,6 @@ class AssetVersions {
   }
 }
 
-/**
- * Internal plugin definition for @Sydsvenskan
- *
- * @param {object} baseAppInstance
- * @param {AssetVersionsOptions} [options]
- * @returns {{ pluginName: 'AssetVersions', main: AssetVersions }}
- */
-AssetVersions.baseAppPlugin = function (baseAppInstance, options) {
-  options = Object.assign({
-    assetDefinitions: require('pkg-dir').sync(__dirname) + '/assets.json',
-    // @ts-ignore
-    useVersionedPaths: baseAppInstance.getConfig().env !== 'development'
-  }, options || {});
-
-  return {
-    pluginName: 'AssetVersions',
-    main: new AssetVersions(options)
-  };
-};
-
 AssetVersions.webpackManifestPluginGenerate = require('./lib/manifest-generator');
 AssetVersions.ASSET_VERSIONS_FILE_VERSION = ASSET_VERSIONS_FILE_VERSION;
 
