@@ -44,7 +44,7 @@ const options = [
   {
     names: ['source-maps', 's'],
     type: 'bool',
-    help: 'Include source-map entries when adding WebPack files',
+    help: 'Include source-map entries when adding Webpack files',
     'default': false
   }
 ];
