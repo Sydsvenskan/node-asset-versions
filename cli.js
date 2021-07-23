@@ -88,7 +88,7 @@ delete opts._args;
 
 const includeSourceMaps = opts.source_maps;
 const workingDir = opts.path || process.cwd();
-const outputFile = pathModule.resolve(workingDir, opts.output);
+const outputFile = opts.output && pathModule.resolve(workingDir, opts.output);
 
 // *** Tool setup ***
 
@@ -131,6 +131,10 @@ loadAssetsOptions(workingDir).then(async ({ files, sourceDir, targetDir, webpack
     files: copiedFiles,
     dependencies,
   };
+
+  if (!outputFile) {
+    throw new Error('Output file name missing somehow. Aborting.');
+  }
 
   await writeJsonFile(outputFile, definition);
 })
