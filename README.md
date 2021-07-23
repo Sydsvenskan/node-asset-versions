@@ -2,6 +2,9 @@
 
 CLI and helper methods for asset versioning. Includes support for Webpack chunking.
 
+* Minimum supported Node version is v14
+* Minimum supported Webpack version is v4.44.0
+
 ## Installation
 
 ```bash
