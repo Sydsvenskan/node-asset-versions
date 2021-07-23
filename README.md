@@ -11,6 +11,10 @@ CLI and helper methods for asset versioning. Includes support for Webpack chunki
 npm install --save-dev @hdsydsvenskan/asset-versions
 ```
 
+## Setup for dev environment
+
+Install Husky hooks using `yarn husky install` before pushing changes.
+
 ## Release new version
 
 Follow [Semantic Versioning](http://semver.org/) and use [np](https://www.npmjs.com/package/np) and a version like `patch | minor | major | prepatch | preminor | premajor | prerelease | 1.2.3`

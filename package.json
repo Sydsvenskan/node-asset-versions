@@ -39,8 +39,7 @@
     "test:example": "run-s build-test && run-p test:example:*",
     "test:mocha": "NODE_ENV=test nyc --reporter=lcov --reporter text mocha --reporter dot test/**/*.spec.js",
     "test-checkless": "run-p test:*",
-    "test": "run-p check && run-p test:*",
-    "postinstall": "husky install"
+    "test": "run-p check && run-p test:*"
   },
   "engines": {
     "node": ">=14.0.0"
