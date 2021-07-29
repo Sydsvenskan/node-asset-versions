@@ -92,12 +92,14 @@ class AssetVersions {
     const { definitionsPath } = this;
 
     // Loads the file defining assets names and settings (webpack manifests etc)
-    const { files, sourceDir, webpackManifest } = loadJsonFile.sync(definitionsPath);
+    /** @type {import('./lib/asset-options').AssetsOptions } */
+    const assetsJson = loadJsonFile.sync(definitionsPath);
+    const { files, sourceDir, webpackManifest } = assetsJson;
 
     const definitionDir = pathModule.dirname(definitionsPath);
     const resolvedSourceDir = pathModule.resolve(definitionDir, sourceDir);
 
-    // Grab the generated lits of versioned files and their dependencies:
+    // Grab the generated lists of versioned files and their dependencies:
     const {
       files: fileVersions,
       dependencies: fileDependencies,
