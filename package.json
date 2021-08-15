@@ -98,6 +98,6 @@
     "rev-file": "^3.0.0",
     "type-fest": "^0.16.0",
     "verror": "^1.10.0",
-    "write-json-file": "^4.2.1"
+    "write-json-file": "^5.0.0"
   }
 }
