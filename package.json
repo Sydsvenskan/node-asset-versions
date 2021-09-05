@@ -94,7 +94,7 @@
     "cp-file": "^9.0.0",
     "dashdash": "^2.0.0",
     "debug": "^4.1.1",
-    "load-json-file": "^6.2.0",
+    "load-json-file": "^7.0.0",
     "rev-file": "^3.0.0",
     "type-fest": "^0.16.0",
     "verror": "^1.10.0",
